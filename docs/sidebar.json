@@ -1,10 +1,10 @@
 {
-  "Notebook": {
-    "Export to modules": "/export",
-    "Convert to html": "/export2html",
-    "Show doc": "/showdoc",
-    "Test functions": "/test",
-    "Core functions": "/core",
-    "Command line functions": "/cli"
+  "torchlife": {
+    "Overview": "/",
+    "module name here": "/core",
+    "Kaplan Meier Estimator": "/KaplanMeier",
+    "Survival Analysis Theory": "/Survival Analysis Theory",
+    "Data": "/data",
+    "Utilities": "/utils"
   }
 }
