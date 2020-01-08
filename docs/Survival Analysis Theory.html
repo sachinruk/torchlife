@@ -24,6 +24,13 @@ summary: "The maths behind survival analysis."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Much of the work here is summarised from the notes in <a href="https://data.princeton.edu/wws509/notes/c7s1">Generalised Linear Models by Germán Rodríguez</a>, Chapter 7.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="The-Survival-Function">The Survival Function<a class="anchor-link" href="#The-Survival-Function">&#182;</a></h2><p>Let us define $S(t)$ to be the probability that an object will survive beyond time $t$. If $f(t)$ is the <strong>instantaneous</strong> probability that a death would be observed at time $t$, the survival function is defined as:
 $$
 S(t) = P(T &gt; t) = 1 - \int_{-\infty}^t f(x) dx
@@ -40,11 +47,11 @@ $$
 $$</p>
 <p>The above can be simplified down by using Bayes Rule, and the definition of $S(t)$ above:
 $$
-\begin{align}
+\begin{aligned}
 \lambda(t) =&amp; \lim\limits_{dt\to0} \frac{P(t&lt;T&lt;t+dt, T &gt; t)}{P(T &gt; t)\quad dt}\\
 =&amp; \lim\limits_{dt\to0} \frac{P(t&lt;T&lt;t+dt)}{dt} \frac{1}{S(t)}\\
 =&amp; \frac{f(t)}{S(t)}
-\end{align}
+\end{aligned}
 $$</p>
 <p>Since $S'(t) = -f(t)$ from the first equation, we can also state:
 $$
@@ -70,19 +77,19 @@ f(t_i) = S(t_i)\lambda(t_i) &amp;\text{ when }d_i = 1 \\
 $$</p>
 <p>The above can be simplified as:
 $$
-\begin{align}
+\begin{aligned}
 L =&amp; \prod_{i=1}^N L_i = \prod_{i=1}^N \lambda(t_i)^{d_i} S(t_i) \\
 \log L =&amp; \sum_{i=1}^N d_i \log \lambda(t_i) - \Lambda(t_i) \\
 -\log L =&amp; \sum_{i=1}^N \Lambda(t_i) - d_i \log \lambda(t_i)
-\end{align}
+\end{aligned}
 $$
 where $\Lambda(t)\equiv -\log S(t)$ is cumulative hazard function.</p>
 <p>Similarly if we wish to avoid taking into account the hazard function, we can define the likelihood function to be:
 $$
-\begin{align}
+\begin{aligned}
 L =&amp; \prod_{i=1}^N L_i = \prod_{i=1}^N f(t_i)^{d_i} S(t_i)^{1-d_i} \\
 -log L =&amp; -\sum_{i=1}^N d_i \log f(t_i) + (1 - d_i) \log S(t_i)
-\end{align}
+\end{aligned}
 $$</p>
 <p>These two formats of the likelihood will be used when modelling the behaviours of censored data (in different modelling settings). We use the negative log likelihood as this is more accommodating for modern deep learning libraries that do gradient descent.</p>
 
