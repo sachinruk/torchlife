@@ -1,7 +1,6 @@
 {
   "torchlife": {
     "Overview": "/",
-    "module name here": "/core",
     "Kaplan Meier Estimator": "/KaplanMeier",
     "Survival Analysis Theory": "/Survival Analysis Theory",
     "Data": "/data",

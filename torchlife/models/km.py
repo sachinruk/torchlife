@@ -28,6 +28,9 @@ class PieceWiseHazard(nn.Module):
         self.max_t = max_t
 
     def cumulative_hazard(self, t, t_section):
+        """
+        Integral of hazard wrt time.
+        """
         λ = torch.exp(self.logλ.weight)
 
         # cumulative hazard
