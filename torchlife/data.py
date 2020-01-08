@@ -13,15 +13,13 @@ import numpy as np
 class Data(Dataset):
     """
     Create pyTorch Dataset
+    parameters:
+    - x: features
+    - t: time elapsed
+    - e: (death) event observed. 1 if observed, 0 otherwise.
+    - b: breakpoints where the hazard is different to previous segment of time.
     """
     def __init__(self, t, e, b=None, x=None):
-        """
-        parameters:
-        - x: features
-        - t: time elapsed
-        - e: (death) event observed. 1 if observed, 0 otherwise.
-        - b: breakpoints where the hazard is different to previous segment of time.
-        """
         super().__init__()
         assert isinstance(b, np.ndarray) or isinstance(b, list) or b is None\
                 , "Breakpoints need to be a list"
@@ -48,6 +46,12 @@ class Data(Dataset):
 
 # Cell
 class DataFrame(Data):
+    """
+    Wrapper around Data Class that takes in a dataframe instead
+    parameters:
+    - df: dataframe. **Must have t (time) and e (event) columns, other cols optional.
+    - b: breakpoints of time (optional)
+    """
     def __init__(self, df, b=None):
         t = df['t'].values
         e = df['e'].values

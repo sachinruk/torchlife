@@ -39,7 +39,14 @@ summary: "Functions used to create pytorch `DataSet`s and `DataLoader`s."
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Data" class="doc_header"><code>class</code> <code>Data</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Data</code>(<strong><code>t</code></strong>, <strong><code>e</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>x</code></strong>=<em><code>None</code></em>) :: <code>Dataset</code></p>
 </blockquote>
-<p>Create pyTorch Dataset</p>
+<p>Create pyTorch Dataset
+parameters:</p>
+<ul>
+<li>x: features</li>
+<li>t: time elapsed</li>
+<li>e: (death) event observed. 1 if observed, 0 otherwise.</li>
+<li>b: breakpoints where the hazard is different to previous segment of time.</li>
+</ul>
 
 </div>
 
@@ -61,9 +68,14 @@ summary: "Functions used to create pytorch `DataSet`s and `DataLoader`s."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataFrame" class="doc_header"><code>class</code> <code>DataFrame</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataFrame</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>) :: <a href="/torchlife/data#Data"><code>Data</code></a></p>
+<h2 id="DataFrame" class="doc_header"><code>class</code> <code>DataFrame</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataFrame</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>) :: <a href="/torchlife/data#Data"><code>Data</code></a></p>
 </blockquote>
-<p>Create pyTorch Dataset</p>
+<p>Wrapper around Data Class that takes in a dataframe instead
+parameters:</p>
+<ul>
+<li>df: dataframe. **Must have t (time) and e (event) columns, other cols optional.</li>
+<li>b: breakpoints of time (optional)</li>
+</ul>
 
 </div>
 
@@ -85,7 +97,7 @@ summary: "Functions used to create pytorch `DataSet`s and `DataLoader`s."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_db" class="doc_header"><code>create_db</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L60" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_db</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>train_p</code></strong>=<em><code>0.8</code></em>, <strong><code>bs</code></strong>=<em><code>128</code></em>, <strong><code>test_ds</code></strong>=<em><code>False</code></em>, <strong><code>test_p</code></strong>=<em><code>0.2</code></em>)</p>
+<h4 id="create_db" class="doc_header"><code>create_db</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L64" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_db</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>train_p</code></strong>=<em><code>0.8</code></em>, <strong><code>bs</code></strong>=<em><code>128</code></em>, <strong><code>test_ds</code></strong>=<em><code>False</code></em>, <strong><code>test_p</code></strong>=<em><code>0.2</code></em>)</p>
 </blockquote>
 <p>Take dataframe and split into train, test, val (optional)
 and convert to Fastai databunch</p>

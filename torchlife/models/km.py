@@ -12,6 +12,12 @@ torch.Tensor.ndim = property(lambda x: x.dim())
 
 # Cell
 class PieceWiseHazard(nn.Module):
+    """
+    Piecewise Hazard where the hazard is constant between breakpoints.
+    parameters:
+    - breakpoints: time points where hazard would change
+    - max_t: maximum point of time to plot to.
+    """
     def __init__(self, breakpoints, max_t):
         super().__init__()
         self.logλ = nn.Embedding(len(breakpoints)+1, 1)
