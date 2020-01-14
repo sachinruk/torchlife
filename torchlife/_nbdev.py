@@ -3,6 +3,7 @@
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"torch.Tensor.ndim": "KaplanMeier.ipynb",
+         "ProportionalHazard": "Cox_Proportional_Hazard.ipynb",
          "PieceWiseHazard": "KaplanMeier.ipynb",
          "km_loss": "KaplanMeier.ipynb",
          "Data": "data.ipynb",
@@ -12,7 +13,8 @@ index = {"torch.Tensor.ndim": "KaplanMeier.ipynb",
          "custom_dir": "utils.ipynb",
          "GetAttr": "utils.ipynb"}
 
-modules = ["models/km.py",
+modules = ["models/cox.py",
+           "models/km.py",
            "data.py",
            "utils.py"]
 

@@ -10,6 +10,9 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
+      title: Cox Proportional Hazard
+      url: /Cox_Proportional_Hazard
+    - output: web,pdf
       title: Kaplan Meier Estimator
       url: /KaplanMeier
     - output: web,pdf

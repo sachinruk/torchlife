@@ -1,6 +1,7 @@
 {
   "torchlife": {
     "Overview": "/",
+    "Cox Proportional Hazard": "/Cox_Proportional_Hazard",
     "Kaplan Meier Estimator": "/KaplanMeier",
     "Survival Analysis Theory": "/Survival Analysis Theory",
     "Data": "/data",

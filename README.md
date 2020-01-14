@@ -8,37 +8,17 @@
 
 -->
 
-# Project name here
+# TorchLife
 
-> Summary description here.
+> Survival Analysis using pytorch
 
 
-This file will become your README and also the index of your documentation.
+This library takes a deep learning approach to Survival Analysis.
 
 ## Install
 
-`pip install your_project_name`
+`pip install torchlife`
 
 ## How to use
 
 Fill me in please! Don't forget code examples:
-<div class="codecell" markdown="1">
-<div class="input_area" markdown="1">
-
-```
-1+1
-```
-
-</div>
-<div class="output_area" markdown="1">
-
-
-
-
-    2
-
-
-
-</div>
-
-</div>

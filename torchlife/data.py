@@ -40,7 +40,7 @@ class Data(Dataset):
 
         if self.x is not None:
             x = torch.Tensor(self.x[i])
-            x_ = (x,) + x_
+            x_ = x_ + (x,)
 
         return x_, e
 

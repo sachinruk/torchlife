@@ -43,7 +43,7 @@ class PieceWiseHazard(nn.Module):
 
         return cum_hazard_sec + λ[t_section] * δ_t
 
-    def forward(self, x, t, t_section):
+    def forward(self, t, t_section, *args):
         return self.logλ(t_section), self.cumulative_hazard(t, t_section)
 
     def plot_survival_function(self):
@@ -62,16 +62,23 @@ class PieceWiseHazard(nn.Module):
         # plot
         plt.figure(figsize=(12,5))
         plt.plot(t_query, surv_fun)
+        plt.xlabel('Time')
+        plt.ylabel('Survival Probability')
         plt.show()
 
     def plot_hazard(self):
-        width = self.widths.cpu().numpy().squeeze()
-        x = self.breakpoints.cpu().numpy().squeeze()
+        """
+        Plot base hazard
+        """
+        width = self.widths.squeeze()
+        x = self.breakpoints.squeeze()
         λ = torch.exp(self.logλ.weight)
         y = λ.squeeze()
         # plot
         plt.figure(figsize=(12,5))
         plt.bar(x, y, width, align='edge')
+        plt.ylabel('λ')
+        plt.xlabel('t')
         plt.show()
 
 # Cell
