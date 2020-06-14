@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Functions used to create pytorch `DataSet`s and `DataLoader`s."
+description: "Functions used to create pytorch `DataSet`s and `DataLoader`s."
 ---
 <!--
 
@@ -18,16 +19,30 @@ summary: "Functions used to create pytorch `DataSet`s and `DataLoader`s."
 -->
 
 <div class="container" id="notebook-container">
+        
+    {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -37,15 +52,14 @@ summary: "Functions used to create pytorch `DataSet`s and `DataLoader`s."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Data" class="doc_header"><code>class</code> <code>Data</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Data</code>(<strong><code>t</code></strong>, <strong><code>e</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>x</code></strong>=<em><code>None</code></em>) :: <code>Dataset</code></p>
+<h2 id="TestData" class="doc_header"><code>class</code> <code>TestData</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestData</code>(<strong><code>t</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>x</code></strong>=<em><code>None</code></em>) :: <code>Dataset</code></p>
 </blockquote>
 <p>Create pyTorch Dataset
 parameters:</p>
 <ul>
-<li>x: features</li>
 <li>t: time elapsed</li>
-<li>e: (death) event observed. 1 if observed, 0 otherwise.</li>
-<li>b: breakpoints where the hazard is different to previous segment of time.</li>
+<li>b: (optional) breakpoints where the hazard is different to previous segment of time.</li>
+<li>x: (optional) features</li>
 </ul>
 
 </div>
@@ -56,9 +70,17 @@ parameters:</p>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -68,7 +90,46 @@ parameters:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataFrame" class="doc_header"><code>class</code> <code>DataFrame</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataFrame</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>) :: <a href="/torchlife/data#Data"><code>Data</code></a></p>
+<h2 id="Data" class="doc_header"><code>class</code> <code>Data</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L46" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Data</code>(<strong><code>t</code></strong>, <strong><code>e</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>x</code></strong>=<em><code>None</code></em>) :: <a href="/torchlife/data#TestData"><code>TestData</code></a></p>
+</blockquote>
+<p>Create pyTorch Dataset
+parameters:</p>
+<ul>
+<li>t: time elapsed</li>
+<li>e: (death) event observed. 1 if observed, 0 otherwise.</li>
+<li>b: (optional) breakpoints where the hazard is different to previous segment of time.</li>
+<li>x: (optional) features</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TestDataFrame" class="doc_header"><code>class</code> <code>TestDataFrame</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L65" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestDataFrame</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>) :: <a href="/torchlife/data#TestData"><code>TestData</code></a></p>
 </blockquote>
 <p>Wrapper around Data Class that takes in a dataframe instead
 parameters:</p>
@@ -85,9 +146,17 @@ parameters:</p>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -97,7 +166,44 @@ parameters:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_db" class="doc_header"><code>create_db</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L64" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_db</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>train_p</code></strong>=<em><code>0.8</code></em>, <strong><code>bs</code></strong>=<em><code>128</code></em>, <strong><code>test_ds</code></strong>=<em><code>False</code></em>, <strong><code>test_p</code></strong>=<em><code>0.2</code></em>)</p>
+<h2 id="DataFrame" class="doc_header"><code>class</code> <code>DataFrame</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataFrame</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>) :: <a href="/torchlife/data#Data"><code>Data</code></a></p>
+</blockquote>
+<p>Wrapper around Data Class that takes in a dataframe instead
+parameters:</p>
+<ul>
+<li>df: dataframe. **Must have t (time) and e (event) columns, other cols optional.</li>
+<li>b: breakpoints of time (optional)</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="create_db" class="doc_header"><code>create_db</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_db</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>train_p</code></strong>=<em><code>0.8</code></em>, <strong><code>bs</code></strong>=<em><code>128</code></em>)</p>
 </blockquote>
 <p>Take dataframe and split into train, test, val (optional)
 and convert to Fastai databunch</p>
@@ -107,7 +213,6 @@ and convert to Fastai databunch</p>
 <li>b: breakpoints of time (optional)</li>
 <li>train_p: training percentage</li>
 <li>bs: batch size</li>
-<li>test_ds: whether to split into test set</li>
 <li>test_p: proportion of whats left over after taking out train set</li>
 </ul>
 
@@ -119,6 +224,32 @@ and convert to Fastai databunch</p>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="create_test_dl" class="doc_header"><code>create_test_dl</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_test_dl</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>128</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
 </div>
  
 

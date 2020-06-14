@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "The maths behind survival analysis."
+description: "The maths behind survival analysis."
 ---
 <!--
 
@@ -18,10 +19,14 @@ summary: "The maths behind survival analysis."
 -->
 
 <div class="container" id="notebook-container">
+        
+    {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Much of the work here is summarised from the notes in <a href="https://data.princeton.edu/wws509/notes/c7s1">Generalised Linear Models by Germán Rodríguez</a>, Chapter 7.</p>
@@ -31,7 +36,7 @@ summary: "The maths behind survival analysis."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-Survival-Function">The Survival Function<a class="anchor-link" href="#The-Survival-Function">&#182;</a></h2><p>Let us define $S(t)$ to be the probability that an object will survive beyond time $t$. If $f(t)$ is the <strong>instantaneous</strong> probability that a death would be observed at time $t$, the survival function is defined as:
+<h2 id="The-Survival-Function">The Survival Function<a class="anchor-link" href="#The-Survival-Function"> </a></h2><p>Let us define $S(t)$ to be the probability that an object will survive beyond time $t$. If $f(t)$ is the <strong>instantaneous</strong> probability that a death would be observed at time $t$, the survival function is defined as:
 $$
 S(t) = P(T &gt; t) = 1 - \int_{-\infty}^t f(x) dx
 $$</p>
@@ -41,7 +46,7 @@ $$</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-Hazard-Function">The Hazard Function<a class="anchor-link" href="#The-Hazard-Function">&#182;</a></h2><p>Another important concept is the hazard function, $\lambda(t)$, which is the <strong>instantaneous rate</strong> of occurence, given that the object has survived until time $t$.
+<h2 id="The-Hazard-Function">The Hazard Function<a class="anchor-link" href="#The-Hazard-Function"> </a></h2><p>Another important concept is the hazard function, $\lambda(t)$, which is the <strong>instantaneous rate</strong> of occurence, given that the object has survived until time $t$.
 $$
 \lambda(t) = \lim\limits_{dt\to0} \frac{P(t&lt;T&lt;t+dt | T &gt; t)}{dt}\\
 $$</p>
@@ -68,7 +73,7 @@ and this will come in handy when we are coding up the survival function.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Likelihood-Function">Likelihood Function<a class="anchor-link" href="#Likelihood-Function">&#182;</a></h2><p>In any probabilistic framework we wish to maxmise the likelihood of observed data given the probability functions. However, unlike classification/ regression situations we need to modify the likelihood $f(t)$. Let us define the case where death, $d_i$ hasn't been observed as censored observations. In those case we know that death will occur at a point $T &gt; t$. Therefore the likelihood $L$ can be defined as:
+<h2 id="Likelihood-Function">Likelihood Function<a class="anchor-link" href="#Likelihood-Function"> </a></h2><p>In any probabilistic framework we wish to maxmise the likelihood of observed data given the probability functions. However, unlike classification/ regression situations we need to modify the likelihood $f(t)$. Let us define the case where death, $d_i$ hasn't been observed as censored observations. In those case we know that death will occur at a point $T &gt; t$. Therefore the likelihood $L$ can be defined as:
 $$
 L_i = \begin{cases}
 f(t_i) = S(t_i)\lambda(t_i) &amp;\text{ when }d_i = 1 \\
@@ -96,6 +101,8 @@ $$</p>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -109,6 +116,8 @@ $$</p>
 </div>
 
 </div>
+    {% endraw %}
+
 </div>
  
 
