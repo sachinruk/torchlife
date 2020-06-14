@@ -2,21 +2,26 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"torch.Tensor.ndim": "KaplanMeier.ipynb",
-         "ProportionalHazard": "Cox_Proportional_Hazard.ipynb",
-         "PieceWiseHazard": "KaplanMeier.ipynb",
-         "km_loss": "KaplanMeier.ipynb",
+index = {"ProportionalHazard": "Cox_Proportional_Hazard.ipynb",
+         "KaplanMeier": "KaplanMeier.ipynb",
+         "aft_loss": "Losses.ipynb",
+         "hazard_loss": "Losses.ipynb",
+         "torch.Tensor.ndim": "PiecewiseHazard.ipynb",
+         "PieceWiseHazard": "PiecewiseHazard.ipynb",
+         "TestData": "data.ipynb",
          "Data": "data.ipynb",
+         "TestDataFrame": "data.ipynb",
          "DataFrame": "data.ipynb",
          "create_db": "data.ipynb",
-         "delegates": "utils.ipynb",
-         "custom_dir": "utils.ipynb",
-         "GetAttr": "utils.ipynb"}
+         "create_test_dl": "data.ipynb",
+         "Model": "model.ipynb"}
 
 modules = ["models/cox.py",
            "models/km.py",
+           "losses.py",
+           "models/ph.py",
            "data.py",
-           "utils.py"]
+           "model.py"]
 
 doc_url = "https://sachinruk.github.io/torchlife/"
 

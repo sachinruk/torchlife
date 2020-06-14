@@ -3,15 +3,16 @@
 __all__ = ['ProportionalHazard']
 
 # Cell
-from .km import PieceWiseHazard, km_loss
+from .ph import PieceWiseHazard
 from ..utils import GetAttr
+from ..losses import hazard_loss
 
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
 
-torch.Tensor.ndim = property(lambda x: x.dim())
+# torch.Tensor.ndim = property(lambda x: x.dim())
 
 # Cell
 class ProportionalHazard(nn.Module):
@@ -45,20 +46,21 @@ class ProportionalHazard(nn.Module):
         return logλ, Λ
 
     def plot_survival_function(self, x):
-        x = torch.Tensor(x)
-        if len(x.shape) < 2:
-            x = x[None, :]
-        # get the times and time sections for survival function
-        t_query = np.arange(self.max_t+10)
-        breakpoints = self.baseλ.breakpoints[1:].cpu().numpy()
-        t_sec_query = np.searchsorted(breakpoints, t_query)
-        # convert to pytorch tensors
-        t_query = torch.Tensor(t_query)[:,None]
-        t_sec_query = torch.LongTensor(t_sec_query)
+        with torch.no_grad():
+            x = torch.Tensor(x)
+            if len(x.shape) < 2:
+                x = x[None, :]
+            # get the times and time sections for survival function
+            t_query = np.arange(self.max_t+10)
+            breakpoints = self.baseλ.breakpoints[1:].cpu().numpy()
+            t_sec_query = np.searchsorted(breakpoints, t_query)
+            # convert to pytorch tensors
+            t_query = torch.Tensor(t_query)[:,None]
+            t_sec_query = torch.LongTensor(t_sec_query)
 
-        # calculate cumulative hazard according to above
-        λ, cum_haz = self.forward(t_query, t_sec_query, x)
-        surv_fun = torch.exp(-cum_haz)
+            # calculate cumulative hazard according to above
+            λ, cum_haz = self.forward(t_query, t_sec_query, x)
+            surv_fun = torch.exp(-cum_haz)
 
         # plot
         plt.figure(figsize=(12,5))
