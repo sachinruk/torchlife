@@ -59,8 +59,8 @@ class PieceWiseHazard(nn.Module):
             t_sec_query = torch.LongTensor(t_sec_query)
 
             # calculate cumulative hazard according to above
-            cum_haz = self.cumulative_hazard(t_query, t_sec_query)
-            surv_fun = torch.exp(-cum_haz)
+            Λ = self.cumulative_hazard(t_query, t_sec_query)
+            surv_fun = torch.exp(-Λ)
 
         # plot
         plt.figure(figsize=(12,5))

@@ -9,6 +9,7 @@ from ..losses import hazard_loss
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -39,10 +40,10 @@ class ProportionalHazard(nn.Module):
 
         for layer in self.layers[:-1]:
             x = F.relu(layer(x))
-        log_hazard = self.layers[-1](x)
+        log_hx = self.layers[-1](x)
 
-        logλ += log_hazard
-        Λ = torch.exp(log_hazard + torch.log(Λ))
+        logλ += log_hx
+        Λ = torch.exp(log_hx + torch.log(Λ))
         return logλ, Λ
 
     def plot_survival_function(self, x):
@@ -59,8 +60,8 @@ class ProportionalHazard(nn.Module):
             t_sec_query = torch.LongTensor(t_sec_query)
 
             # calculate cumulative hazard according to above
-            λ, cum_haz = self.forward(t_query, t_sec_query, x)
-            surv_fun = torch.exp(-cum_haz)
+            _, Λ = self.forward(t_query, t_sec_query, x)
+            surv_fun = torch.exp(-Λ)
 
         # plot
         plt.figure(figsize=(12,5))

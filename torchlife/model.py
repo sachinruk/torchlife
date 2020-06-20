@@ -3,6 +3,8 @@
 __all__ = ['Model']
 
 # Cell
+import torch
+import torch.nn as nn
 from .models.km import KaplanMeier
 from .models.ph import PieceWiseHazard
 from .models.cox import ProportionalHazard
@@ -14,6 +16,19 @@ from .losses import *
 from fastai.basics import Learner
 
 # Cell
+_text2model_ = {
+    'km': KaplanMeier,
+    'ph': PieceWiseHazard,
+    'cox': ProportionalHazard
+}
+
+_text2loss_ = {
+    'km': hazard_loss,
+    'ph': hazard_loss,
+    'cox': hazard_loss
+}
+
+# Cell
 class Model:
     def __init__(self, model:str, model_args:dict=None, breakpoints:list=None,
                  bs:int=128, epochs:int=20, lr:float=1, beta:float=0):
@@ -21,27 +36,33 @@ class Model:
         self.loss = __text2loss__[model]
         self.breakpoints = breakpoints
         self.bs, self.epochs, self.lr, self.beta = bs, epochs, lr, beta
+        self.learner = None
 
-    def lr_find(df):
+    def lr_find(self, df):
         db = create_db(df, self.breakpoints)
-        learner = Learner(db, model, loss_func=hazard_loss)
-        learner.lr_find(wd=self.beta)
-        learner.recorder.plot()
+        self.learner = Learner(db, self.model, loss_func=self.loss, wd=self.beta)
+        self.learner.lr_find(wd=self.beta)
+        self.learner.recorder.plot()
 
-    def fit(df):
+    def fit(self, df):
         if hasattr(self.model, 'fit'):
             self.model.fit(df)
         else:
-            db = create_db(df, self.breakpoints)
-            learner = Learner(db, model, loss_func=hazard_loss)
-            learner.fit(self.epochs, lr=self.lr, wd=self.beta)
+            if self.learner is None:
+                db = create_db(df, self.breakpoints)
+                self.learner = Learner(db, self.model, loss_func=self.loss, wd=self.beta)
+            self.learner.fit(self.epochs, lr=self.lr, wd=self.beta)
 
-    def predict(df):
-        test_dl = create_test_dl(df)
-        preds = []
-        for x in test_dl:
-            preds.append(self.model(x))
-        return preds
+    def predict(self, df):
+        test_dl = create_test_dl(df, self.breakpoints)
+        with torch.no_grad():
+            self.model.eval()
+            λ, Λ = [], []
+            for x in test_dl:
+                preds = self.model(*x)
+                λ.append(torch.exp(preds[0]))
+                Λ.append(preds[1])
+            return torch.cat(λ), torch.cat(Λ)
 
-    def plot_survival():
+    def plot_survival(self):
         self.model.plot_survival_function()
