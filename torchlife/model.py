@@ -32,8 +32,8 @@ _text2loss_ = {
 class Model:
     def __init__(self, model:str, model_args:dict=None, breakpoints:list=None,
                  bs:int=128, epochs:int=20, lr:float=1, beta:float=0):
-        self.model = __text2model__[model](**model_args)
-        self.loss = __text2loss__[model]
+        self.model = _text2model_[model](**model_args)
+        self.loss = _text2loss_[model]
         self.breakpoints = breakpoints
         self.bs, self.epochs, self.lr, self.beta = bs, epochs, lr, beta
         self.learner = None

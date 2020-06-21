@@ -7,12 +7,23 @@ index = {"ProportionalHazard": "Cox_Proportional_Hazard.ipynb",
          "aft_loss": "Losses.ipynb",
          "hazard_loss": "Losses.ipynb",
          "torch.Tensor.ndim": "PiecewiseHazard.ipynb",
-         "PieceWiseHazard": "PiecewiseHazard.ipynb"}
+         "PieceWiseHazard": "PiecewiseHazard.ipynb",
+         "Weibull": "Weibull_Model.ipynb",
+         "TestData": "data.ipynb",
+         "Data": "data.ipynb",
+         "TestDataFrame": "data.ipynb",
+         "DataFrame": "data.ipynb",
+         "create_db": "data.ipynb",
+         "create_test_dl": "data.ipynb",
+         "Model": "model.ipynb"}
 
 modules = ["models/cox.py",
            "models/km.py",
            "losses.py",
-           "models/ph.py"]
+           "models/ph.py",
+           "models/weibull.py",
+           "data.py",
+           "model.py"]
 
 doc_url = "https://sachinruk.github.io/torchlife/"
 

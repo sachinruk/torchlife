@@ -3,9 +3,13 @@
 __all__ = ['aft_loss', 'hazard_loss']
 
 # Cell
-def aft_loss(log_pdf, log_cdf, t, e, *args):
-    lik = e * log_pdf(y, args) + (1 - e) * log_cdf(y, args)
-    return -torch.mean(lik)
+def _aft_loss(log_pdf, log_cdf, e):
+    lik = e * log_pdf + (1 - e) * log_cdf
+    return -lik.mean()
+
+def aft_loss(params, e):
+    log_pdf, log_cdf = params
+    return _aft_loss(log_pdf, log_cdf, e)
 
 # Cell
 def _hazard_loss(logλ, Λ, e):

@@ -1,10 +1,14 @@
 {
   "torchlife": {
     "Overview": "/",
+    "Accelerated Failure Time Models": "/AFT_models",
     "Cox Proportional Hazard": "/Cox_Proportional_Hazard",
-    "Kaplan Meier Estimator": "/KaplanMeier",
+    "Kaplan Meier Model": "/KaplanMeier",
+    "Losses": "/Losses",
+    "Piecewise Hazard Model": "/PiecewiseHazard",
     "Survival Analysis Theory": "/Survival Analysis Theory",
+    "Weibull Model": "/Weibull_Model",
     "Data": "/data",
-    "Utilities": "/utils"
+    "Base Model": "/model"
   }
 }
