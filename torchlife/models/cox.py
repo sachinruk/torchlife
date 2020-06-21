@@ -29,8 +29,8 @@ class ProportionalHazard(nn.Module):
         super().__init__()
         self.baseλ = PieceWiseHazard(breakpoints, max_t)
         nodes = (dim,) + h + (1,)
-        self.layers = [nn.Linear(a,b, bias=False)
-                       for a,b in zip(nodes[:-1], nodes[1:])]
+        self.layers = nn.ModuleList([nn.Linear(a,b, bias=False)
+                                   for a,b in zip(nodes[:-1], nodes[1:])])
         self.max_t = max_t
 #         self.default = self.baseλ # used for delegation
 

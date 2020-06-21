@@ -104,7 +104,6 @@ def create_db(df, b=None, train_p=0.8, bs=128):
     - b: breakpoints of time (optional)
     - train_p: training percentage
     - bs: batch size
-    - test_p: proportion of whats left over after taking out train set
     """
     df.reset_index(drop=True, inplace=True)
 
@@ -119,7 +118,14 @@ def create_db(df, b=None, train_p=0.8, bs=128):
     return db
 
 def create_test_dl(df, b=None, bs=128):
+    """
+    Take dataframe and return a pytorch dataloader.
+    parameters:
+    - df: pandas dataframe
+    - b: breakpoints of time (optional)
+    - bs: batch size
+    """
     df.reset_index(drop=True, inplace=True)
     test_ds = TestDataFrame(df, b)
-    test_dl = DataLoader(test_ds, bs, drop_last=False)
+    test_dl = DataLoader(test_ds, bs, shuffle=False, drop_last=False)
     return test_dl

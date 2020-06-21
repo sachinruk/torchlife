@@ -185,6 +185,13 @@ parameters:</p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create iterable data loaders/ fastai databunch using above:</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -213,7 +220,6 @@ and convert to Fastai databunch</p>
 <li>b: breakpoints of time (optional)</li>
 <li>train_p: training percentage</li>
 <li>bs: batch size</li>
-<li>test_p: proportion of whats left over after taking out train set</li>
 </ul>
 
 </div>
@@ -237,8 +243,15 @@ and convert to Fastai databunch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_test_dl" class="doc_header"><code>create_test_dl</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_test_dl</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>128</code></em>)</p>
+<h4 id="create_test_dl" class="doc_header"><code>create_test_dl</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L120" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_test_dl</code>(<strong><code>df</code></strong>, <strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>128</code></em>)</p>
 </blockquote>
+<p>Take dataframe and return a pytorch dataloader.
+parameters:</p>
+<ul>
+<li>df: pandas dataframe</li>
+<li>b: breakpoints of time (optional)</li>
+<li>bs: batch size</li>
+</ul>
 
 </div>
 
