@@ -16,23 +16,26 @@ entries:
       title: Accelerated Failure Time Models
       url: /AFT_models
     - output: web,pdf
-      title: Cox Proportional Hazard
-      url: /Cox_Proportional_Hazard
-    - output: web,pdf
       title: Kaplan Meier Model
       url: /KaplanMeier
     - output: web,pdf
       title: Losses
       url: /Losses
     - output: web,pdf
-      title: Piecewise Hazard Model
-      url: /PiecewiseHazard
-    - output: web,pdf
       title: Survival Analysis Theory
-      url: /Survival Analysis Theory
+      url: /SAT
     - output: web,pdf
       title: Data
       url: /data
+    - output: web,pdf
+      title: Cox Proportional Hazard
+      url: /hazard.Cox
+    - output: web,pdf
+      title: Piecewise Hazard Model
+      url: /hazard.PiecewiseHazard
+    - output: web,pdf
+      title: Hazard Models
+      url: /hazard
     - output: web,pdf
       title: Base Model
       url: /model
