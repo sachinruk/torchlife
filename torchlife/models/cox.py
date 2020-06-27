@@ -4,7 +4,6 @@ __all__ = ['ProportionalHazard']
 
 # Cell
 from .ph import PieceWiseHazard
-from ..utils import GetAttr
 from ..losses import hazard_loss
 
 import torch
@@ -32,10 +31,8 @@ class ProportionalHazard(nn.Module):
         self.layers = nn.ModuleList([nn.Linear(a,b, bias=False)
                                    for a,b in zip(nodes[:-1], nodes[1:])])
         self.max_t = max_t
-#         self.default = self.baseλ # used for delegation
 
     def forward(self, t, t_section, x):
-        # get the Kaplan Meier estimates
         logλ, Λ = self.baseλ(t, t_section)
 
         for layer in self.layers[:-1]:
