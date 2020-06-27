@@ -10,6 +10,9 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
+      title: Error Distributions
+      url: /AFT_error_distributions
+    - output: web,pdf
       title: Accelerated Failure Time Models
       url: /AFT_models
     - output: web,pdf
@@ -27,9 +30,6 @@ entries:
     - output: web,pdf
       title: Survival Analysis Theory
       url: /Survival Analysis Theory
-    - output: web,pdf
-      title: Weibull Model
-      url: /Weibull_Model
     - output: web,pdf
       title: Data
       url: /data

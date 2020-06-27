@@ -4,6 +4,9 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"gumbel_logpdf": "AFT_error_distributions.ipynb",
          "gumbel_logcdf": "AFT_error_distributions.ipynb",
+         "gaussian_logpdf": "AFT_error_distributions.ipynb",
+         "gaussian_logcdf": "AFT_error_distributions.ipynb",
+         "get_dists": "AFT_error_distributions.ipynb",
          "AFT": "AFT_models.ipynb",
          "ProportionalHazard": "Cox_Proportional_Hazard.ipynb",
          "KaplanMeier": "KaplanMeier.ipynb",
@@ -17,10 +20,7 @@ index = {"gumbel_logpdf": "AFT_error_distributions.ipynb",
          "DataFrame": "data.ipynb",
          "create_db": "data.ipynb",
          "create_test_dl": "data.ipynb",
-         "Model": "model.ipynb",
-         "gaussian_logpdf": "AFT_error_distributions.ipynb",
-         "gaussian_logcdf": "AFT_error_distributions.ipynb",
-         "get_dists": "AFT_error_distributions.ipynb"}
+         "Model": "model.ipynb"}
 
 modules = ["models/error_dist.py",
            "models/aft.py",

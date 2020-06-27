@@ -28,7 +28,9 @@ def gaussian_logcdf(z:torch.Tensor):
 
 # Cell
 def get_dists(dist:torch.distributions):
-
+    """
+    Get the logpdf and logcdf of a given torch distribution
+    """
     def dist_logpdf(z):
         return dist.log_prob(z)
 

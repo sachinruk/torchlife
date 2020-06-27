@@ -15,7 +15,7 @@ class AFT(nn.Module):
     Accelerated Failure Time model
     parameters:
     - logpdf (function): function that outputs log probabilty of error between time and expected time
-    - logcdf (function): function that outputs log cumulative probabilty of error between time and expected time
+    - log1cdf (function): function that outputs log of 1 - cumulative probabilty of error between time and expected time
     - dim (optional): input dimensionality of variables
     - h (optional): number of hidden nodes
     """
