@@ -1,15 +1,21 @@
 {
   "torchlife": {
     "Overview": "/",
-    "Error Distributions": "/AFT_error_distributions",
-    "Accelerated Failure Time Models": "/AFT_models",
-    "Kaplan Meier Model": "/KaplanMeier",
-    "Losses": "/Losses",
     "Survival Analysis Theory": "/SAT",
-    "Data": "/data",
-    "Cox Proportional Hazard": "/hazard.Cox",
-    "Piecewise Hazard Model": "/hazard.PiecewiseHazard",
-    "Hazard Models": "/hazard",
-    "Base Model": "/model"
+    "Kaplan Meier Model": "/KaplanMeier",
+    "Hazard Models": {
+      "Overview": "/hazard",
+      "Piecewise Hazard": "/hazard.PiecewiseHazard",
+      "Cox Proportional Hazard": "/hazard.Cox"
+    },
+    "AFT": {
+      "Error Distributions": "/AFT_error_distributions",
+      "Accelerated Failure Time Models": "/AFT_models"
+    },
+    "Model": {
+      "Data": "/data",
+      "Base Model": "/model",
+      "Losses": "/Losses"
+    }
   }
 }
