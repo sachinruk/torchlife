@@ -3,14 +3,18 @@
     "Overview": "/",
     "Survival Analysis Theory": "/SAT",
     "Kaplan Meier Model": "/KaplanMeier",
-    "Hazard Models": {
-      "Overview": "/hazard",
-      "Piecewise Hazard": "/hazard.PiecewiseHazard",
-      "Cox Proportional Hazard": "/hazard.Cox"
+    "": {
+      "Hazard Models": {
+        "Overview": "/hazard",
+        "Piecewise Hazard": "/hazard.PiecewiseHazard",
+        "Cox Proportional Hazard": "/hazard.Cox"
+      }
     },
-    "AFT": {
-      "Error Distributions": "/AFT_error_distributions",
-      "Accelerated Failure Time Models": "/AFT_models"
+    "empty1": {
+      "AFT": {
+        "Error Distributions": "/AFT_error_distributions",
+        "Accelerated Failure Time Models": "/AFT_models"
+      }
     },
     "Model": {
       "Data": "/data",

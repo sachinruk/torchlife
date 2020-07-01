@@ -15,27 +15,28 @@ entries:
     - output: web,pdf
       title: Kaplan Meier Model
       url: /KaplanMeier
-    - output: web
       subfolders:
-      - output: web,pdf
-        title: Overview
-        url: /hazard
-      - output: web,pdf
-        title: Piecewise Hazard
-        url: /hazard.PiecewiseHazard
-      - output: web,pdf
-        title: Cox Proportional Hazard
-        url: /hazard.Cox
-      title: Hazard Models
-    - output: web
-      subfolders:
-      - output: web,pdf
-        title: Error Distributions
-        url: /AFT_error_distributions
-      - output: web,pdf
-        title: Accelerated Failure Time Models
-        url: /AFT_models
-      title: AFT
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Overview
+          url: /hazard
+        - output: web,pdf
+          title: Piecewise Hazard
+          url: /hazard.PiecewiseHazard
+        - output: web,pdf
+          title: Cox Proportional Hazard
+          url: /hazard.Cox
+        title: Hazard Models
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Error Distributions
+          url: /AFT_error_distributions
+        - output: web,pdf
+          title: Accelerated Failure Time Models
+          url: /AFT_models
+        title: AFT
     - output: web
       subfolders:
       - output: web,pdf
