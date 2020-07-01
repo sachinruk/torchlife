@@ -16,10 +16,12 @@
         "Accelerated Failure Time Models": "/AFT_models"
       }
     },
-    "Model": {
-      "Data": "/data",
-      "Base Model": "/model",
-      "Losses": "/Losses"
+    "empty2": {
+      "Model": {
+        "Data": "/data",
+        "Base Model": "/model",
+        "Losses": "/Losses"
+      }
     }
   }
 }
