@@ -2,34 +2,34 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"gumbel_logpdf": "AFT_error_distributions.ipynb",
-         "gumbel_logcdf": "AFT_error_distributions.ipynb",
-         "gaussian_logpdf": "AFT_error_distributions.ipynb",
-         "gaussian_logcdf": "AFT_error_distributions.ipynb",
-         "get_dists": "AFT_error_distributions.ipynb",
-         "AFT": "AFT_models.ipynb",
-         "KaplanMeier": "KaplanMeier.ipynb",
-         "aft_loss": "Losses.ipynb",
-         "hazard_loss": "Losses.ipynb",
-         "TestData": "data.ipynb",
-         "Data": "data.ipynb",
-         "TestDataFrame": "data.ipynb",
-         "DataFrame": "data.ipynb",
-         "create_db": "data.ipynb",
-         "create_test_dl": "data.ipynb",
-         "ProportionalHazard": "hazard.Cox.ipynb",
-         "torch.Tensor.ndim": "hazard.PiecewiseHazard.ipynb",
-         "PieceWiseHazard": "hazard.PiecewiseHazard.ipynb",
-         "Model": "model.ipynb"}
+index = {"KaplanMeier": "20_KaplanMeier.ipynb",
+         "torch.Tensor.ndim": "55_hazard.PiecewiseHazard.ipynb",
+         "PieceWiseHazard": "55_hazard.PiecewiseHazard.ipynb",
+         "ProportionalHazard": "59_hazard.Cox.ipynb",
+         "AFT": "60_AFT_models.ipynb",
+         "gumbel_logpdf": "65_AFT_error_distributions.ipynb",
+         "gumbel_logcdf": "65_AFT_error_distributions.ipynb",
+         "gaussian_logpdf": "65_AFT_error_distributions.ipynb",
+         "gaussian_logcdf": "65_AFT_error_distributions.ipynb",
+         "get_dists": "65_AFT_error_distributions.ipynb",
+         "TestData": "80_data.ipynb",
+         "Data": "80_data.ipynb",
+         "TestDataFrame": "80_data.ipynb",
+         "DataFrame": "80_data.ipynb",
+         "create_db": "80_data.ipynb",
+         "create_test_dl": "80_data.ipynb",
+         "ModelHazard": "90_model.ipynb",
+         "aft_loss": "95_Losses.ipynb",
+         "hazard_loss": "95_Losses.ipynb"}
 
-modules = ["models/error_dist.py",
-           "models/aft.py",
-           "models/km.py",
-           "losses.py",
-           "data.py",
-           "models/cox.py",
+modules = ["models/km.py",
            "models/ph.py",
-           "model.py"]
+           "models/cox.py",
+           "models/aft.py",
+           "models/error_dist.py",
+           "data.py",
+           "model.py",
+           "losses.py"]
 
 doc_url = "https://sachinruk.github.io/torchlife/"
 
