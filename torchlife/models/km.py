@@ -5,6 +5,7 @@ __all__ = ['KaplanMeier']
 # Cell
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 
 # Cell
 class KaplanMeier:
@@ -23,6 +24,17 @@ class KaplanMeier:
         if 0 not in self.survival_function:
             self.survival_function[0] = 1
             self.survival_function.sort_index(inplace=True)
+
+        t = self.survival_function.index
+        p = self.survival_function.values
+        self.interpolate = interp1d(t, p, bounds_error=False, fill_value="extrapolate")
+
+    def predict(self, t):
+        if any(t < 0):
+            raise Exception("Time cannot be less than 0.")
+        p = self.interpolate(t)
+        p[p<0] = 0
+        return p
 
     def plot_survival_function(self):
         fig, ax = plt.subplots()

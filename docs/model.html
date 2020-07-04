@@ -34,6 +34,12 @@ description: "This class contains the base which is used to train data upon."
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Modelling-Hazard">Modelling Hazard<a class="anchor-link" href="#Modelling-Hazard"> </a></h2>
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -59,14 +65,14 @@ description: "This class contains the base which is used to train data upon."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelHazard" class="doc_header"><code>class</code> <code>ModelHazard</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/model.py#L32" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelHazard</code>(<strong><code>model</code></strong>:<code>str</code>, <strong><code>model_args</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>breakpoints</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>epochs</code></strong>:<code>int</code>=<em><code>20</code></em>, <strong><code>lr</code></strong>:<code>float</code>=<em><code>1</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0</code></em>)</p>
+<h2 id="ModelHazard" class="doc_header"><code>class</code> <code>ModelHazard</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/model.py#L25" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelHazard</code>(<strong><code>model</code></strong>:<code>str</code>, <strong><code>percentiles</code></strong>=<em><code>[20, 40, 60, 80]</code></em>, <strong><code>h</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>epochs</code></strong>:<code>int</code>=<em><code>20</code></em>, <strong><code>lr</code></strong>:<code>float</code>=<em><code>1</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Modelling instantaneous hazard (λ).
 parameters:</p>
 <ul>
-<li>model(str): ['km'|'ph'|'cox'] which maps to Kaplan Meier, Piecewise Hazard, Cox Proportional Hazard.</li>
-<li>model_args: See documentation of relevant model for necessary parameters (if any).</li>
-<li>breakpoints: time points where hazard would change.</li>
+<li>model(str): ['ph'|'cox'] which maps to Piecewise Hazard, Cox Proportional Hazard.</li>
+<li>percentiles: list of time percentiles at which time should be broken</li>
+<li>h: list of hidden units (disregarding input units)</li>
 <li>bs: batch size</li>
 <li>epochs: epochs</li>
 <li>lr: learning rate</li>
@@ -224,12 +230,7 @@ parameters:</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;week&#39;</span><span class="p">:</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;arrest&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">event_times</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-<span class="n">breakpoints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">event_times</span><span class="p">,</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">])</span>
-<span class="n">max_t</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-<span class="n">dim</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span>
-<span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;breakpoints&#39;</span><span class="p">:</span> <span class="n">breakpoints</span><span class="p">,</span> <span class="s1">&#39;max_t&#39;</span><span class="p">:</span> <span class="n">max_t</span><span class="p">,</span> <span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="n">dim</span><span class="p">}</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;cox&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">breakpoints</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ModelHazard</span><span class="p">(</span><span class="s1">&#39;cox&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -272,122 +273,122 @@ parameters:</p>
   <tbody>
     <tr>
       <td>0</td>
-      <td>4137.632812</td>
-      <td>593.761292</td>
+      <td>6.742665</td>
+      <td>7.579776</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>2169.122803</td>
-      <td>88.810028</td>
+      <td>298003.781250</td>
+      <td>3.479129</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>1421.311523</td>
-      <td>24.565239</td>
+      <td>192593.875000</td>
+      <td>14.131868</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>1037.651733</td>
-      <td>10.273753</td>
+      <td>139987.671875</td>
+      <td>22.084724</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>805.983765</td>
-      <td>5.843089</td>
+      <td>108502.625000</td>
+      <td>27.943113</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>651.403809</td>
-      <td>4.139925</td>
+      <td>87577.460938</td>
+      <td>32.330669</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>541.172974</td>
-      <td>3.382817</td>
+      <td>72685.945312</td>
+      <td>35.646198</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>458.760590</td>
-      <td>3.009356</td>
+      <td>61565.183594</td>
+      <td>38.163654</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>394.930756</td>
-      <td>2.810371</td>
+      <td>52958.257812</td>
+      <td>40.079590</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>344.123444</td>
-      <td>2.697758</td>
+      <td>46110.441406</td>
+      <td>41.538994</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>10</td>
-      <td>302.794067</td>
-      <td>2.630875</td>
+      <td>40541.859375</td>
+      <td>42.650539</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>11</td>
-      <td>268.574768</td>
-      <td>2.589494</td>
+      <td>35932.410156</td>
+      <td>43.496605</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>12</td>
-      <td>239.827499</td>
-      <td>2.562989</td>
+      <td>32060.501953</td>
+      <td>44.139965</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>13</td>
-      <td>215.375351</td>
-      <td>2.545482</td>
+      <td>28767.871094</td>
+      <td>44.628597</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>14</td>
-      <td>194.357361</td>
-      <td>2.533624</td>
+      <td>25938.228516</td>
+      <td>44.999241</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>15</td>
-      <td>176.135834</td>
-      <td>2.525405</td>
+      <td>23484.644531</td>
+      <td>45.280033</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>16</td>
-      <td>160.206635</td>
-      <td>2.519597</td>
+      <td>21340.613281</td>
+      <td>45.492458</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>17</td>
-      <td>146.193802</td>
-      <td>2.515415</td>
+      <td>19454.134766</td>
+      <td>45.652969</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>18</td>
-      <td>133.788147</td>
-      <td>2.512364</td>
+      <td>17784.378906</td>
+      <td>45.774113</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>19</td>
-      <td>122.750786</td>
-      <td>2.510109</td>
+      <td>16298.639648</td>
+      <td>45.865425</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -426,6 +427,53 @@ parameters:</p>
 
 <div class="output_text output_subarea output_execute_result">
 <pre>(torch.Size([432, 1]), torch.Size([432, 1]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Modelling-Distribution-with-AFT-models">Modelling Distribution with <a href="./AFT_models">AFT</a> models<a class="anchor-link" href="#Modelling-Distribution-with-AFT-models"> </a></h2>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ModelAFT" class="doc_header"><code>class</code> <code>ModelAFT</code><a href="" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelAFT</code>(<strong><code>dist</code></strong>:<code>str</code>, <strong><code>h</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>epochs</code></strong>:<code>int</code>=<em><code>20</code></em>, <strong><code>lr</code></strong>:<code>float</code>=<em><code>1</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0</code></em>)</p>
+</blockquote>
+<p>Modelling error distribution given inputs x.
+parameters:</p>
+<ul>
+<li>dist(str): Univariate distribution of error</li>
+<li>h: list of hidden units (disregarding input units)</li>
+<li>bs: batch size</li>
+<li>epochs: epochs</li>
+<li>lr: learning rate</li>
+<li>beta: l2 penalty on weights</li>
+</ul>
+
 </div>
 
 </div>

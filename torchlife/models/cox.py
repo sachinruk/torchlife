@@ -24,9 +24,9 @@ class ProportionalHazard(nn.Module):
     - dim: number of input dimensions of x
     - h: (optional) number of hidden units (for x only).
     """
-    def __init__(self, breakpoints, max_t, dim, h=()):
+    def __init__(self, breakpoints, widths, dim, h=(), **kwargs):
         super().__init__()
-        self.baseλ = PieceWiseHazard(breakpoints, max_t)
+        self.baseλ = PieceWiseHazard(breakpoints, widths)
         nodes = (dim,) + h + (1,)
         self.layers = nn.ModuleList([nn.Linear(a,b, bias=False)
                                    for a,b in zip(nodes[:-1], nodes[1:])])

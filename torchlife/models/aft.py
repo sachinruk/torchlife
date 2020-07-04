@@ -44,11 +44,14 @@ class AFT(nn.Module):
         logcdf = self.logcdf(ξ)
         return logpdf, logcdf
 
-    def plot_survival_function(self, t:torch.Tensor, x:torch.Tensor=None):
+    def survival_function(self, t:torch.Tensor, x:torch.Tensor=None):
         with torch.no_grad():
             # calculate cumulative hazard according to above
             _, Λ = self.forward(t, x)
-            surv_fun = torch.exp(Λ)
+            return torch.exp(Λ)
+
+    def plot_survival_function(self, t:torch.Tensor, x:torch.Tensor=None):
+        surv_fun = self.survival_function(t, x)
 
         # plot
         plt.figure(figsize=(12,5))

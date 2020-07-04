@@ -18,12 +18,12 @@ class PieceWiseHazard(nn.Module):
     - breakpoints: time points where hazard would change
     - max_t: maximum point of time to plot to.
     """
-    def __init__(self, breakpoints, max_t):
+    def __init__(self, breakpoints, widths, **kwargs):
         super().__init__()
-        self.logλ = nn.Parameter(torch.randn(len(breakpoints)+1, 1))
-        self.register_buffer('breakpoints', torch.Tensor([0] + breakpoints.tolist()))
-        bounded_bp = [0] + breakpoints.tolist() + [max_t]
-        self.register_buffer('widths', torch.Tensor(np.diff(bounded_bp).tolist())[:,None])
+        self.logλ = nn.Parameter(torch.randn(len(breakpoints)-1, 1))
+        self.register_buffer('breakpoints', torch.Tensor(breakpoints[:-1]))
+#         bounded_bp = [0] + breakpoints.tolist() + [max_t]
+        self.register_buffer('widths', torch.Tensor(widths)[:,None])
         self.prepend_zero = nn.ConstantPad2d((0,0,1,0), 0)
 
     def cumulative_hazard(self, t, t_section):
