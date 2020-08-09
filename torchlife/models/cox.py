@@ -3,14 +3,14 @@
 __all__ = ['ProportionalHazard']
 
 # Cell
-from .ph import PieceWiseHazard
-from ..losses import hazard_loss
-
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
-import numpy as np
+
+from ..losses import hazard_loss
+from .ph import PieceWiseHazard
 
 # torch.Tensor.ndim = property(lambda x: x.dim())
 
@@ -49,7 +49,7 @@ class ProportionalHazard(nn.Module):
                 x = x[None, :]
             # get the times and time sections for survival function
             breakpoints = self.baseλ.breakpoints[1:].cpu().numpy()
-            t_sec_query = np.searchsorted(breakpoints, t)
+            t_sec_query = np.searchsorted(breakpoints.squeeze(), t.squeeze())
             # convert to pytorch tensors
             t_query = torch.Tensor(t)[:,None]
             t_sec_query = torch.LongTensor(t_sec_query)

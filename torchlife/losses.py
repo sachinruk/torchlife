@@ -3,6 +3,10 @@
 __all__ = ['aft_loss', 'hazard_loss']
 
 # Cell
+from typing import Tuple
+from torch import Tensor
+
+# Cell
 def _aft_loss(log_pdf, log_cdf, e):
     lik = e * log_pdf + (1 - e) * log_cdf
     return -lik.mean()
@@ -16,6 +20,11 @@ def _hazard_loss(logλ, Λ, e):
     log_lik = e * logλ - Λ
     return -log_lik.mean()
 
-def hazard_loss(params, e):
-    logλ, Λ = params
+def hazard_loss(hazard:Tuple[Tensor, Tensor], e:Tensor) -> Tensor:
+    """
+    parameters:
+    - hazard: log hazard and Cumulative hazard
+    - e: tensor of 1 if death event occured and 0 otherwise
+    """
+    logλ, Λ = hazard
     return _hazard_loss(logλ, Λ, e)
