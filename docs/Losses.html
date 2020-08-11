@@ -27,6 +27,13 @@ description: "All the losses used in SA."
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Suppose that we have:
@@ -64,7 +71,7 @@ $$</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="aft_loss" class="doc_header"><code>aft_loss</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/losses.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>aft_loss</code>(<strong><code>params</code></strong>, <strong><code>e</code></strong>)</p>
+<h4 id="aft_loss" class="doc_header"><code>aft_loss</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/losses.py#L14" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>aft_loss</code>(<strong><code>params</code></strong>, <strong><code>e</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -79,7 +86,7 @@ $$</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use the following loss function to infer our model.
+<p>We use the following loss function to infer our model. See <a href="./SAT#Likelihood-Function">here</a> for theory.
 $$
 -\log L = \sum_{i=1}^N \Lambda(t_i) - d_i \log \lambda(t_i)
 $$</p>
@@ -105,8 +112,13 @@ $$</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="hazard_loss" class="doc_header"><code>hazard_loss</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/losses.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hazard_loss</code>(<strong><code>params</code></strong>, <strong><code>e</code></strong>)</p>
+<h4 id="hazard_loss" class="doc_header"><code>hazard_loss</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/losses.py#L23" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hazard_loss</code>(<strong><code>hazard</code></strong>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>], <strong><code>e</code></strong>:<code>Tensor</code>)</p>
 </blockquote>
+<p>parameters:</p>
+<ul>
+<li>hazard: log hazard and Cumulative hazard</li>
+<li>e: tensor of 1 if death event occured and 0 otherwise</li>
+</ul>
 
 </div>
 

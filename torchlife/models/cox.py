@@ -8,6 +8,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from sklearn.preprocessing import MaxAbsScaler, StandardScaler
 
 from ..losses import hazard_loss
 from .ph import PieceWiseHazard
@@ -24,9 +25,11 @@ class ProportionalHazard(nn.Module):
     - dim: number of input dimensions of x
     - h: (optional) number of hidden units (for x only).
     """
-    def __init__(self, breakpoints, widths, dim, h=(), **kwargs):
+    def __init__(self, breakpoints:np.array, t_scaler:MaxAbsScaler, x_scaler:StandardScaler,
+                 dim:int, h:tuple=(), **kwargs):
         super().__init__()
-        self.baseλ = PieceWiseHazard(breakpoints, widths)
+        self.baseλ = PieceWiseHazard(breakpoints, t_scaler)
+        self.x_scaler = x_scaler
         nodes = (dim,) + h + (1,)
         self.layers = nn.ModuleList([nn.Linear(a,b, bias=False)
                                    for a,b in zip(nodes[:-1], nodes[1:])])
@@ -42,16 +45,23 @@ class ProportionalHazard(nn.Module):
         Λ = torch.exp(log_hx + torch.log(Λ))
         return logλ, Λ
 
-    def survival_function(self, t, x):
+    def survival_function(self, t:np.array, x:np.array) -> torch.Tensor:
+        if len(t.shape) == 1:
+            t = t[:,None]
+        t = self.baseλ.t_scaler.transform(t)
+        if len(x.shape) == 1:
+            x = x[None, :]
+            x = np.repeat(x, len(t), axis=0)
+        x = self.x_scaler.transform(x)
+
+
         with torch.no_grad():
             x = torch.Tensor(x)
-            if len(x.shape) < 2:
-                x = x[None, :]
             # get the times and time sections for survival function
             breakpoints = self.baseλ.breakpoints[1:].cpu().numpy()
             t_sec_query = np.searchsorted(breakpoints.squeeze(), t.squeeze())
             # convert to pytorch tensors
-            t_query = torch.Tensor(t)[:,None]
+            t_query = torch.Tensor(t)
             t_sec_query = torch.LongTensor(t_sec_query)
 
             # calculate cumulative hazard according to above
@@ -59,7 +69,7 @@ class ProportionalHazard(nn.Module):
             return torch.exp(-Λ)
 
 
-    def plot_survival_function(self, t, x):
+    def plot_survival_function(self, t:np.array, x:np.array) -> None:
         s = self.survival_function(t, x)
 
         # plot

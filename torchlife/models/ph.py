@@ -18,7 +18,7 @@ class PieceWiseHazard(nn.Module):
     parameters:
     - breakpoints: time points where hazard would change (must include 0 and max possible time)
     """
-    def __init__(self, breakpoints:np.array, t_scaler, **kwargs):
+    def __init__(self, breakpoints:np.array, t_scaler:MaxAbsScaler, **kwargs):
         super().__init__()
         self.t_scaler = t_scaler
         if len(breakpoints.shape) == 1:

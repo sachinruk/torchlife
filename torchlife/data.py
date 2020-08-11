@@ -6,6 +6,7 @@ __all__ = ['TestData', 'Data', 'TestDataFrame', 'DataFrame', 'create_db', 'creat
 from typing import Optional, Tuple, Union
 
 import numpy as np
+import pandas as pd
 import torch
 from fastai.data_block import DataBunch, DatasetType
 from pandas import DataFrame
@@ -26,16 +27,17 @@ class TestData(Dataset):
                  t_scaler:MaxAbsScaler=None, x_scaler:StandardScaler=None) -> None:
         super().__init__()
         self.t, self.b, self.x = t, b, x
+        self.t_scaler = t_scaler
+        self.x_scaler = x_scaler
         if len(t.shape) == 1:
             self.t = t[:,None]
 
-#         breakpoint()
         if t_scaler:
-            self.t_scale = t_scaler
-            self.t = self.t_scale.transform(self.t)
+            self.t_scaler = t_scaler
+            self.t = self.t_scaler.transform(self.t)
         else:
-            self.t_scale = MaxAbsScaler()
-            self.t = self.t_scale.fit_transform(self.t)
+            self.t_scaler = MaxAbsScaler()
+            self.t = self.t_scaler.fit_transform(self.t)
 
         if b is not None:
             b = b[1:-1]
@@ -44,17 +46,17 @@ class TestData(Dataset):
             if t_scaler:
                 self.b = t_scaler.transform(b).squeeze()
             else:
-                self.b = self.t_scale.transform(b).squeeze()
+                self.b = self.t_scaler.transform(b).squeeze()
 
         if x is not None:
             if len(x.shape) == 1:
-                self.x = x[:,None]
+                self.x = x[None, :]
             if x_scaler:
-                self.x_scale = x_scaler
-                self.x = self.x_scale.transform(self.x)
+                self.x_scaler = x_scaler
+                self.x = self.x_scaler.transform(self.x)
             else:
-                self.x_scale = StandardScaler()
-                self.x = self.x_scale.fit_transform(self.x)
+                self.x_scaler = StandardScaler()
+                self.x = self.x_scaler.fit_transform(self.x)
 
     def __len__(self) -> int:
         return len(self.t)
@@ -131,7 +133,8 @@ class DataFrame(Data):
         super().__init__(t, e, b, x, t_scaler, x_scaler)
 
 # Cell
-def create_db(df, b:Optional[np.array]=None, train_p:float=0.8, bs:int=128) -> None:
+def create_db(df:pd.DataFrame, b:Optional[np.array]=None, train_p:float=0.8, bs:int=128)\
+    -> Tuple[DataBunch, MaxAbsScaler, StandardScaler]:
     """
     Take dataframe and split into train, test, val (optional)
     and convert to Fastai databunch
@@ -147,19 +150,16 @@ def create_db(df, b:Optional[np.array]=None, train_p:float=0.8, bs:int=128) -> N
     train_len = int(train_p*len(df))
 
     train_ds = DataFrame(df.iloc[:train_len], b)
-    val_ds = DataFrame(df.iloc[train_len:], b, train_ds.t_scale, train_ds.x_scale)
+    val_ds = DataFrame(df.iloc[train_len:], b, train_ds.t_scaler, train_ds.x_scaler)
 
     train_dl = DataLoader(train_ds, bs, shuffle=True, drop_last=False)
     val_dl = DataLoader(val_ds, bs, drop_last=False)
     db = DataBunch(train_dl, val_dl)
 
-    if b is None:
-        return db
-    else:
-        return db, train_ds.t_scale
+    return db, train_ds.t_scaler, train_ds.x_scaler
 
-def create_test_dl(df, t_scaler:MaxAbsScaler, b:Optional[np.array]=None, bs:int=128,
-                  x_scaler:StandardScaler=None) -> None:
+def create_test_dl(df:pd.DataFrame, t_scaler:MaxAbsScaler, b:Optional[np.array]=None, bs:int=128,
+                  x_scaler:StandardScaler=None) -> DataLoader:
     """
     Take dataframe and return a pytorch dataloader.
     parameters:
