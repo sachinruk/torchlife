@@ -3,31 +3,39 @@
 __all__ = ['AFT']
 
 # Cell
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from sklearn.preprocessing import MaxAbsScaler, StandardScaler
 
-import matplotlib.pyplot as plt
+from .error_dist import get_distribution
 
 # Cell
 class AFT(nn.Module):
     """
     Accelerated Failure Time model
     parameters:
-    - logpdf (function): function that outputs log probabilty of error between time and expected time
-    - log1cdf (function): function that outputs log of 1 - cumulative probabilty of error between time and expected time
+    - Distribution of which the error is assumed to be
+    - t_scaler: time scaling sklearn object
+    - x_scaler (optional): feature scaler
     - dim (optional): input dimensionality of variables
     - h (optional): number of hidden nodes
     """
-    def __init__(self, logpdf, logcdf, dim:int=0, h:tuple=()):
+    def __init__(self, distribution:str,
+                 t_scaler:MaxAbsScaler, x_scaler:StandardScaler=None,
+                 dim:int=0, h:tuple=()):
         super().__init__()
-        self.logpdf, self.logcdf = logpdf, logcdf
+        self.logpdf, self.logcdf = get_distribution(distribution)
         self.β = nn.Parameter(-torch.rand(1))
+        self.logσ = nn.Parameter(-torch.rand(1))
         if dim > 0:
             nodes = (dim,) + h + (1,)
             self.layers = nn.ModuleList([nn.Linear(a,b, bias=False)
                                        for a,b in zip(nodes[:-1], nodes[1:])])
 
+        self.t_scaler, self.x_scaler = t_scaler, x_scaler
         self.eps = 1e-7
 
     def forward(self, t:torch.Tensor, x:torch.Tensor=None):
@@ -37,20 +45,32 @@ class AFT(nn.Module):
             for layer in self.layers[:-1]:
                 x = F.relu(layer(x))
             μ += self.layers[-1](x)
-#         μ = torch.exp(μ)
-#         breakpoint()
+
         ξ = torch.log(t + self.eps) - μ
-        logpdf = self.logpdf(ξ)
-        logcdf = self.logcdf(ξ)
+        σ = torch.exp(self.logσ)
+        logpdf = self.logpdf(ξ, σ)
+        logcdf = self.logcdf(ξ, σ)
         return logpdf, logcdf
 
-    def survival_function(self, t:torch.Tensor, x:torch.Tensor=None):
+    def survival_function(self, t:np.array, x:np.array=None):
+        if len(t.shape) == 1:
+            t = t[:,None]
+        t = self.t_scaler.transform(t)
+        t = torch.Tensor(t)
+        if x is not None:
+            if len(x.shape) == 1:
+                x = x[None, :]
+            if len(x) == 1:
+                x = np.repeat(x, len(t), axis=0)
+            x = self.x_scaler.transform(x)
+            x = torch.Tensor(x)
+
         with torch.no_grad():
             # calculate cumulative hazard according to above
             _, Λ = self.forward(t, x)
             return torch.exp(Λ)
 
-    def plot_survival_function(self, t:torch.Tensor, x:torch.Tensor=None):
+    def plot_survival_function(self, t:np.array, x:np.array=None):
         surv_fun = self.survival_function(t, x)
 
         # plot

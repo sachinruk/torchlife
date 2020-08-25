@@ -51,6 +51,7 @@ class ProportionalHazard(nn.Module):
         t = self.baseλ.t_scaler.transform(t)
         if len(x.shape) == 1:
             x = x[None, :]
+        if len(x) == 1:
             x = np.repeat(x, len(t), axis=0)
         x = self.x_scaler.transform(x)
 

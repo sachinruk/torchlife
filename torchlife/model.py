@@ -35,7 +35,7 @@ class ModelHazard:
     - beta: l2 penalty on weights
     """
     def __init__(self, model:str, percentiles=[20, 40, 60, 80], h:tuple=(),
-                 bs:int=128, epochs:int=20, lr:float=1, beta:float=0):
+                 bs:int=128, epochs:int=20, lr:float=1.0, beta:float=0):
         self.model = _text2model_[model]
         self.percentiles = percentiles
         self.loss = hazard_loss
@@ -44,14 +44,24 @@ class ModelHazard:
         self.learner = None
 
     def create_learner(self, df):
-        breakpoints, widths = get_breakpoints(df, self.percentiles)
+        breakpoints = get_breakpoints(df, self.percentiles)
+        db, t_scaler, x_scaler = create_db(df, breakpoints)
         dim = df.shape[1] - 2
-        db = create_db(df, breakpoints)
-        model_args = {'breakpoints': breakpoints, 'widths': widths, 'h': self.h, 'dim': dim}
+        assert dim > 0, ValueError("dimensions of x input needs to be >0. Choose ph instead")
+
+        model_args = {
+            'breakpoints': breakpoints,
+            't_scaler': t_scaler,
+            'x_scaler': x_scaler,
+            'h': self.h,
+            'dim': dim
+        }
         self.model = self.model(**model_args)
         self.learner = Learner(db, self.model, loss_func=self.loss, wd=self.beta)
 
         self.breakpoints = breakpoints
+        self.t_scaler = t_scaler
+        self.x_scaler = x_scaler
 
     def lr_find(self, df):
         if self.learner is None:
@@ -66,7 +76,7 @@ class ModelHazard:
         self.learner.fit(self.epochs, lr=self.lr, wd=self.beta)
 
     def predict(self, df):
-        test_dl = create_test_dl(df, self.breakpoints)
+        test_dl = create_test_dl(df, self.breakpoints, self.t_scaler, self.x_scaler)
         with torch.no_grad():
             self.model.eval()
             λ, S = [], []

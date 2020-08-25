@@ -141,7 +141,7 @@ def create_db(df:pd.DataFrame, b:Optional[np.array]=None, train_p:float=0.8, bs:
 
     parameters:
     - df: pandas dataframe
-    - b: breakpoints of time (optional)
+    - b(optional): breakpoints of time. **Must include 0 as first element and the maximum time as last element**
     - train_p: training percentage
     - bs: batch size
     """
@@ -158,8 +158,9 @@ def create_db(df:pd.DataFrame, b:Optional[np.array]=None, train_p:float=0.8, bs:
 
     return db, train_ds.t_scaler, train_ds.x_scaler
 
-def create_test_dl(df:pd.DataFrame, t_scaler:MaxAbsScaler, b:Optional[np.array]=None, bs:int=128,
-                  x_scaler:StandardScaler=None) -> DataLoader:
+def create_test_dl(df:pd.DataFrame, b:Optional[np.array]=None,
+                   t_scaler:MaxAbsScaler=None, x_scaler:StandardScaler=None,
+                   bs:int=128) -> DataLoader:
     """
     Take dataframe and return a pytorch dataloader.
     parameters:
