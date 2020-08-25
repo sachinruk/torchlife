@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from .models.ph import PieceWiseHazard
 from .models.cox import ProportionalHazard
-from .models.aft import AFT
+from .models.aft import AFTModel
 
 from .data import create_db, create_test_dl, get_breakpoints
 
@@ -114,7 +114,7 @@ class ModelAFT:
     def create_learner(self, df):
         dim = df.shape[1] - 2
         db = create_db(df)
-        self.model = AFT(*get_distribution(self.dist), dim, self.h)
+        self.model = AFTModel(self.dist, dim, self.h)
         self.learner = Learner(db, self.model, loss_func=self.loss, wd=self.beta)
 
     def lr_find(self, df):
