@@ -4,6 +4,18 @@
 
 This library takes a deep learning approach to Survival Analysis.
 
+## What is Survival Analysis
+A lot of classification problems are actually survival analysis problems and haven't been tackled as such. For example, consider a cancer patient and you take X-ray data from that patient. Over time, patients will **eventually** die from cancer (lets ignore the case where people will die from other diseases). The usual approach is to say here is the X-ray (x) and will the patient die in the next 30 days or not (y).
+
+Survival analysis instead asks the question given the input (x) and a time(t), what is the probability that a patient will survive for a time greater than t. Considering the training dataset if a patient is still alive, in the classification case it would be thought of as y = 0. In survival analysis we say that it is a censored observation since the patient will die at a certain time in the future when the experiment is not being conducted.
+
+The above analogy can be thought of in other scenarios such as churn prediction as well.
+
+A proper dive into theory can be seen [here](./SAT).
+
+## What's with the name?
+Well, if you torch a life... you probability wouldn't survive. 😬
+
 ## Install
 
 `pip install torchlife`
