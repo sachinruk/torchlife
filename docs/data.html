@@ -2,6 +2,7 @@
 
 title: Data
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -39,13 +40,6 @@ nb_path: "80_data.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -53,7 +47,7 @@ nb_path: "80_data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TestData" class="doc_header"><code>class</code> <code>TestData</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L17" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestData</code>(<strong><code>t</code></strong>:<code>array</code>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>x</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>) :: <code>Dataset</code></p>
+<h2 id="TestData" class="doc_header"><code>class</code> <code>TestData</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestData</code>(<strong><code>t</code></strong>:<code>array</code>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>x</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>) :: <code>Dataset</code></p>
 </blockquote>
 <p>Create pyTorch Dataset
 parameters:</p>
@@ -92,7 +86,7 @@ parameters:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Data" class="doc_header"><code>class</code> <code>Data</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Data</code>(<strong><code>t</code></strong>:<code>array</code>, <strong><code>e</code></strong>:<code>array</code>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>x</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>) :: <a href="/torchlife/data.html#TestData"><code>TestData</code></a></p>
+<h2 id="Data" class="doc_header"><code>class</code> <code>Data</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L87" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Data</code>(<strong><code>t</code></strong>:<code>array</code>, <strong><code>e</code></strong>:<code>array</code>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>x</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>) :: <a href="/torchlife/data.html#TestData"><code>TestData</code></a></p>
 </blockquote>
 <p>Create pyTorch Dataset
 parameters:</p>
@@ -131,7 +125,7 @@ parameters:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TestDataFrame" class="doc_header"><code>class</code> <code>TestDataFrame</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestDataFrame</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>) :: <a href="/torchlife/data.html#TestData"><code>TestData</code></a></p>
+<h2 id="TestDataFrame" class="doc_header"><code>class</code> <code>TestDataFrame</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L109" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TestDataFrame</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>) :: <a href="/torchlife/data.html#TestData"><code>TestData</code></a></p>
 </blockquote>
 <p>Wrapper around Data Class that takes in a dataframe instead
 parameters:</p>
@@ -168,7 +162,7 @@ parameters:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataFrame" class="doc_header"><code>class</code> <code>DataFrame</code><a href="pandas/core/frame.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataFrame</code>(<strong><code>data</code></strong>=<em><code>None</code></em>, <strong><code>index</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>T_co</code>]]=<em><code>None</code></em>, <strong><code>columns</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>T_co</code>]]=<em><code>None</code></em>, <strong><code>dtype</code></strong>:<code>Union</code>[<code>str</code>, <code>dtype</code>, <code>ForwardRef('ExtensionDtype')</code>, <code>NoneType</code>]=<em><code>None</code></em>, <strong><code>copy</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>NDFrame</code></p>
+<h2 id="DataFrame" class="doc_header"><code>class</code> <code>DataFrame</code><a href="pandas/core/frame.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataFrame</code>(<strong><code>data</code></strong>=<em><code>None</code></em>, <strong><code>index</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>T_co</code>]]=<em><code>None</code></em>, <strong><code>columns</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>T_co</code>]]=<em><code>None</code></em>, <strong><code>dtype</code></strong>:<code>Union</code>[<code>ForwardRef('ExtensionDtype')</code>, <code>str</code>, <code>dtype</code>, <code>Type</code>[<code>Union</code>[<code>str</code>, <code>float</code>, <code>int</code>, <code>complex</code>, <code>bool</code>]], <code>NoneType</code>]=<em><code>None</code></em>, <strong><code>copy</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <code>NDFrame</code></p>
 </blockquote>
 <p>Two-dimensional, size-mutable, potentially heterogeneous tabular data.</p>
 <p>Data structure also contains labeled axes (rows and columns).
@@ -199,9 +193,9 @@ copy : bool, default False
     Copy data from inputs. Only affects DataFrame / 2d ndarray input.</p>
 <h2 id="See-Also">See Also<a class="anchor-link" href="#See-Also"> </a></h2><p>DataFrame.from_records : Constructor from tuples, also record arrays.
 DataFrame.from_dict : From dicts of Series, arrays, or dicts.
-read_csv
-read_table
-read_clipboard</p>
+read_csv : Read a comma-separated values (csv) file into DataFrame.
+read_table : Read general delimited file into DataFrame.
+read_clipboard : Read text from clipboard into DataFrame.</p>
 <h2 id="Examples">Examples<a class="anchor-link" href="#Examples"> </a></h2><p>Constructing DataFrame from a dictionary.</p>
 <blockquote><blockquote><blockquote><p>d = {'col1': [1, 2], 'col2': [3, 4]}
 df = pd.DataFrame(data=d)
@@ -251,6 +245,13 @@ df2
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Create iterable data loaders/ fastai databunch using above:</p>
@@ -262,13 +263,6 @@ df2
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -276,7 +270,7 @@ df2
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_db" class="doc_header"><code>create_db</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_db</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>train_p</code></strong>:<code>float</code>=<em><code>0.8</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>)</p>
+<h4 id="create_dl" class="doc_header"><code>create_dl</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_dl</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>train_size</code></strong>:<code>float</code>=<em><code>0.8</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>)</p>
 </blockquote>
 <p>Take dataframe and split into train, test, val (optional)
 and convert to Fastai databunch</p>
@@ -309,7 +303,7 @@ and convert to Fastai databunch</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_test_dl" class="doc_header"><code>create_test_dl</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_test_dl</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>)</p>
+<h4 id="create_test_dl" class="doc_header"><code>create_test_dl</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_test_dl</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>b</code></strong>:<code>Optional</code>[<code>array</code>]=<em><code>None</code></em>, <strong><code>t_scaler</code></strong>:<code>MaxAbsScaler</code>=<em><code>None</code></em>, <strong><code>x_scaler</code></strong>:<code>StandardScaler</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>only_x</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Take dataframe and return a pytorch dataloader.
 parameters:</p>
@@ -347,7 +341,7 @@ parameters:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_breakpoints" class="doc_header"><code>get_breakpoints</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L177" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_breakpoints</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>percentiles</code></strong>:<code>list</code>=<em><code>[20, 40, 60, 80]</code></em>)</p>
+<h4 id="get_breakpoints" class="doc_header"><code>get_breakpoints</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/data.py#L187" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_breakpoints</code>(<strong><code>df</code></strong>:<a href="/torchlife/data.html#DataFrame"><code>DataFrame</code></a>, <strong><code>percentiles</code></strong>:<code>list</code>=<em><code>[20, 40, 60, 80]</code></em>)</p>
 </blockquote>
 <p>Gives the times at which death events occur at given percentile
 parameters:
@@ -360,6 +354,13 @@ percentiles - list of percentages at which breakpoints occur (do not include 0 a
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

@@ -3,17 +3,23 @@
 __all__ = ['ModelHazard', 'ModelAFT']
 
 # Cell
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Callable, List, Optional, Tuple
+
+import pandas as pd
+import pytorch_lightning as pl
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 from .models.ph import PieceWiseHazard
 from .models.cox import ProportionalHazard
 from .models.aft import AFTModel
-
-from .data import create_db, create_test_dl, get_breakpoints
-
-from .losses import *
-
-from fastai.basics import Learner
+from .data import create_dl, create_test_dl, get_breakpoints
+from .losses import aft_loss, hazard_loss, Loss, HazardLoss, AFTLoss
 
 # Cell
 _text2model_ = {
@@ -21,7 +27,6 @@ _text2model_ = {
     'cox': ProportionalHazard
 }
 
-# Cell
 class ModelHazard:
     """
     Modelling instantaneous hazard (λ).
@@ -36,16 +41,15 @@ class ModelHazard:
     """
     def __init__(self, model:str, percentiles=[20, 40, 60, 80], h:tuple=(),
                  bs:int=128, epochs:int=20, lr:float=1.0, beta:float=0):
-        self.model = _text2model_[model]
+        self.base_model = _text2model_[model]
         self.percentiles = percentiles
-        self.loss = hazard_loss
+        self.loss_fn = HazardLoss()
         self.h = h
         self.bs, self.epochs, self.lr, self.beta = bs, epochs, lr, beta
-        self.learner = None
 
-    def create_learner(self, df):
+    def fit(self, df):
         breakpoints = get_breakpoints(df, self.percentiles)
-        db, t_scaler, x_scaler = create_db(df, breakpoints)
+        train_dl, valid_dl, t_scaler, x_scaler = create_dl(df, breakpoints)
         dim = df.shape[1] - 2
         assert dim > 0, ValueError("dimensions of x input needs to be >0. Choose ph instead")
 
@@ -56,24 +60,16 @@ class ModelHazard:
             'h': self.h,
             'dim': dim
         }
-        self.model = self.model(**model_args)
-        self.learner = Learner(db, self.model, loss_func=self.loss, wd=self.beta)
+        self.model = GeneralModel(
+            self.base_model(**model_args),
+            self.loss_fn,
+            self.lr
+        )
 
         self.breakpoints = breakpoints
         self.t_scaler = t_scaler
         self.x_scaler = x_scaler
-
-    def lr_find(self, df):
-        if self.learner is None:
-            self.create_learner(df)
-
-        self.learner.lr_find(wd=self.beta)
-        self.learner.recorder.plot()
-
-    def fit(self, df):
-        if self.learner is None:
-            self.create_learner(df)
-        self.learner.fit(self.epochs, lr=self.lr, wd=self.beta)
+        train_model(self.model, train_dl, valid_dl, self.epochs)
 
     def predict(self, df):
         test_dl = create_test_dl(df, self.breakpoints, self.t_scaler, self.x_scaler)
@@ -81,13 +77,13 @@ class ModelHazard:
             self.model.eval()
             λ, S = [], []
             for x in test_dl:
-                preds = self.model(*x)
+                preds = self.model(x)
                 λ.append(torch.exp(preds[0]))
                 S.append(torch.exp(-preds[1]))
             return torch.cat(λ), torch.cat(S)
 
     def plot_survival_function(self, *args):
-        self.model.plot_survival_function(*args)
+        self.model.base.plot_survival_function(*args)
 
 # Cell
 from .models.error_dist import *
@@ -104,40 +100,51 @@ class ModelAFT:
     - beta: l2 penalty on weights
     """
     def __init__(self, dist:str, h:tuple=(),
-                 bs:int=128, epochs:int=20, lr:float=1, beta:float=0):
+                 bs:int=128, epochs:int=20, lr:float=0.1, beta:float=0):
         self.dist = dist
-        self.loss = aft_loss
+        self.loss_fn = AFTLoss()
         self.h = h
         self.bs, self.epochs, self.lr, self.beta = bs, epochs, lr, beta
-        self.learner = None
-
-    def create_learner(self, df):
-        dim = df.shape[1] - 2
-        db = create_db(df)
-        self.model = AFTModel(self.dist, dim, self.h)
-        self.learner = Learner(db, self.model, loss_func=self.loss, wd=self.beta)
-
-    def lr_find(self, df):
-        if self.learner is None:
-            self.create_learner(df)
-
-        self.learner.lr_find(wd=self.beta)
-        self.learner.recorder.plot()
 
     def fit(self, df):
-        if self.learner is None:
-            self.create_learner(df)
-        self.learner.fit(self.epochs, lr=self.lr, wd=self.beta)
+        train_dl, valid_dl, self.t_scaler, self.x_scaler = create_dl(df)
+        dim = df.shape[1] - 2
+        aft_model = AFTModel(self.dist, dim, self.h)
+        self.model = GeneralModel(
+            aft_model,
+            self.loss_fn,
+            self.lr
+        )
+
+        train_model(self.model, train_dl, valid_dl, self.epochs)
 
     def predict(self, df):
+        """
+        Predicts the survival probability
+        """
         test_dl = create_test_dl(df)
         with torch.no_grad():
             self.model.eval()
             Λ = []
             for x in test_dl:
-                _, logΛ = self.model(*x)
-                Λ.append(torch.log(logΛ))
-            return torch.cat(Λ)
+                _, logΛ = self.model(x)
+                Λ.append(torch.exp(logΛ))
+            return torch.cat(Λ).cpu().numpy()
 
-    def plot_survival(self, *args):
-        self.model.plot_survival_function(*args)
+    def predict_time(self, df):
+        """
+        Predicts the mode (not average) time expected for instance.
+        """
+        if "t" not in df.columns:
+            df["t"] = 0
+        test_dl = create_test_dl(df)
+        with torch.no_grad():
+            self.model.eval()
+            μ = []
+            for _, x in test_dl:
+                logμ, _ = self.model.base.get_mode_time(x)
+                μ.append(torch.exp(logμ))
+            return self.t_scaler.inverse_transform(torch.cat(μ).cpu().numpy())
+
+    def plot_survival(self, t, x):
+        self.model.plot_survival_function(t, self.t_scaler, x, self.x_scaler)

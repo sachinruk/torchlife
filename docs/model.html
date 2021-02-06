@@ -2,6 +2,7 @@
 
 title: Base Model
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -37,17 +38,10 @@ nb_path: "90_model.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Modelling-Hazard">Modelling Hazard<a class="anchor-link" href="#Modelling-Hazard"> </a></h2>
+<h2 id="General-Model">General Model<a class="anchor-link" href="#General-Model"> </a></h2>
 </div>
 </div>
 </div>
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -55,7 +49,53 @@ nb_path: "90_model.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dim</span> <span class="o">=</span> <span class="mi">0</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">GeneralModel</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">loss_fn</span><span class="p">:</span> <span class="n">Loss</span><span class="p">,</span>
+        <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        n_features: The number of real valued feature.</span>
+<span class="sd">        n_layers: Number of Deep learning layers.</span>
+<span class="sd">        loss_fn: Loss function.</span>
+<span class="sd">        n_cats: List of integers containing the number of unique values per category.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">loss_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">common_step</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">]:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">density_term</span><span class="p">,</span> <span class="n">cumulative_term</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">density_term</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">cumulative_term</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+        
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">loss</span><span class="p">):</span>
+            <span class="n">breakpoint</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">loss</span>
+    
+    <span class="k">def</span> <span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_step</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;training_loss&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">validation_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_step</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;val_loss&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="n">optimizer</span><span class="p">,</span>
+            <span class="s2">&quot;lr_scheduler&quot;</span><span class="p">:</span> <span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;val_loss&quot;</span>
+        <span class="p">}</span>
 </pre></div>
 
     </div>
@@ -68,45 +108,40 @@ nb_path: "90_model.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-</div>
-    {% endraw %}
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_dl</span><span class="p">,</span> <span class="n">valid_dl</span><span class="p">,</span> <span class="n">epochs</span><span class="p">):</span>
+    <span class="n">checkpoint_callback</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span>
+        <span class="n">monitor</span><span class="o">=</span><span class="s2">&quot;val_loss&quot;</span><span class="p">,</span>
+        <span class="n">dirpath</span><span class="o">=</span><span class="s2">&quot;./models/&quot;</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span> <span class="s2">&quot;model-</span><span class="si">{epoch:02d}</span><span class="s2">-</span><span class="si">{val_loss:.2f}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">save_last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">early_stopping</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="s2">&quot;val_loss&quot;</span><span class="p">)</span>
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
+    <span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span>
+        <span class="n">max_epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
+        <span class="n">gpus</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">(),</span>
+        <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">early_stopping</span><span class="p">,</span> <span class="n">checkpoint_callback</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_dl</span><span class="p">,</span> <span class="n">valid_dl</span><span class="p">)</span>
+</pre></div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelHazard" class="doc_header"><code>class</code> <code>ModelHazard</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/model.py#L25" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelHazard</code>(<strong><code>model</code></strong>:<code>str</code>, <strong><code>percentiles</code></strong>=<em><code>[20, 40, 60, 80]</code></em>, <strong><code>h</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>epochs</code></strong>:<code>int</code>=<em><code>20</code></em>, <strong><code>lr</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0</code></em>)</p>
-</blockquote>
-<p>Modelling instantaneous hazard (λ).
-parameters:</p>
-<ul>
-<li>model(str): ['ph'|'cox'] which maps to Piecewise Hazard, Cox Proportional Hazard.</li>
-<li>percentiles: list of time percentiles at which time should be broken</li>
-<li>h: list of hidden units (disregarding input units)</li>
-<li>bs: batch size</li>
-<li>epochs: epochs</li>
-<li>lr: learning rate</li>
-<li>beta: l2 penalty on weights</li>
-</ul>
-
-</div>
-
-</div>
-
+    </div>
 </div>
 </div>
 
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Data-for-Demo">Data for Demo<a class="anchor-link" href="#Data-for-Demo"> </a></h2>
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -155,8 +190,8 @@ parameters:</p>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>week</th>
-      <th>arrest</th>
+      <th>t</th>
+      <th>e</th>
       <th>fin</th>
       <th>age</th>
       <th>race</th>
@@ -240,6 +275,60 @@ parameters:</p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Hazard-Model">Hazard Model<a class="anchor-link" href="#Hazard-Model"> </a></h2>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ModelHazard" class="doc_header"><code>class</code> <code>ModelHazard</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/model.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelHazard</code>(<strong><code>model</code></strong>:<code>str</code>, <strong><code>percentiles</code></strong>=<em><code>[20, 40, 60, 80]</code></em>, <strong><code>h</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>epochs</code></strong>:<code>int</code>=<em><code>20</code></em>, <strong><code>lr</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0</code></em>)</p>
+</blockquote>
+<p>Modelling instantaneous hazard (λ).
+parameters:</p>
+<ul>
+<li>model(str): ['ph'|'cox'] which maps to Piecewise Hazard, Cox Proportional Hazard.</li>
+<li>percentiles: list of time percentiles at which time should be broken</li>
+<li>h: list of hidden units (disregarding input units)</li>
+<li>bs: batch size</li>
+<li>epochs: epochs</li>
+<li>lr: learning rate</li>
+<li>beta: l2 penalty on weights</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Cox-Model-Demo">Cox Model Demo<a class="anchor-link" href="#Cox-Model-Demo"> </a></h2>
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -247,11 +336,59 @@ parameters:</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;week&#39;</span><span class="p">:</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;arrest&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">ModelHazard</span><span class="p">(</span><span class="s1">&#39;cox&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelHazard</span><span class="p">(</span><span class="s1">&#39;cox&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>GPU available: False, used: False
+TPU available: None, using: 0 TPU cores
+
+  | Name | Type               | Params
+--------------------------------------------
+0 | base | ProportionalHazard | 12    
+--------------------------------------------
+12        Trainable params
+0         Non-trainable params
+12        Total params
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre></pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/sachinthaka/opt/miniconda3/lib/python3.7/site-packages/pytorch_lightning/utilities/distributed.py:49: UserWarning: training_step returned None if it was on purpose, ignore this warning...
+  warnings.warn(*args, **kwargs)
+Saving latest checkpoint...
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -265,156 +402,10 @@ parameters:</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># %tensorboard --logdir ./lightning_logs/</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>7.833423</td>
-      <td>0.967097</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>5.683983</td>
-      <td>5.419213</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>4.220398</td>
-      <td>2.326273</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>3.532574</td>
-      <td>2.975143</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>3.170237</td>
-      <td>2.695517</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>2.902388</td>
-      <td>2.413046</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>2.703852</td>
-      <td>2.368250</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>7</td>
-      <td>2.566355</td>
-      <td>2.401003</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>8</td>
-      <td>2.468170</td>
-      <td>2.421380</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>9</td>
-      <td>2.380688</td>
-      <td>2.414237</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>10</td>
-      <td>2.302491</td>
-      <td>2.382060</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>11</td>
-      <td>2.231990</td>
-      <td>2.342292</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>12</td>
-      <td>2.175530</td>
-      <td>2.305152</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>13</td>
-      <td>2.126492</td>
-      <td>2.272365</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>14</td>
-      <td>2.074608</td>
-      <td>2.240799</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>15</td>
-      <td>2.024477</td>
-      <td>2.216629</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>16</td>
-      <td>1.973889</td>
-      <td>2.193553</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>17</td>
-      <td>1.919915</td>
-      <td>2.165451</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>18</td>
-      <td>1.867201</td>
-      <td>2.137714</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>19</td>
-      <td>1.816647</td>
-      <td>2.103195</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -465,13 +456,6 @@ parameters:</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -479,7 +463,7 @@ parameters:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelAFT" class="doc_header"><code>class</code> <code>ModelAFT</code><a href="" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelAFT</code>(<strong><code>dist</code></strong>:<code>str</code>, <strong><code>h</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>epochs</code></strong>:<code>int</code>=<em><code>20</code></em>, <strong><code>lr</code></strong>:<code>float</code>=<em><code>1</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0</code></em>)</p>
+<h2 id="ModelAFT" class="doc_header"><code>class</code> <code>ModelAFT</code><a href="https://github.com/sachinruk/torchlife/tree/master/torchlife/model.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelAFT</code>(<strong><code>dist</code></strong>:<code>str</code>, <strong><code>h</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>epochs</code></strong>:<code>int</code>=<em><code>20</code></em>, <strong><code>lr</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Modelling error distribution given inputs x.
 parameters:</p>
@@ -496,6 +480,375 @@ parameters:</p>
 
 </div>
 
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelAFT</span><span class="p">(</span><span class="s1">&#39;Gumbel&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>GPU available: False, used: False
+TPU available: None, using: 0 TPU cores
+
+  | Name | Type     | Params
+----------------------------------
+0 | base | AFTModel | 9     
+----------------------------------
+9         Trainable params
+0         Non-trainable params
+9         Total params
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre></pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/sachinthaka/opt/miniconda3/lib/python3.7/site-packages/pytorch_lightning/utilities/distributed.py:49: UserWarning: training_step returned None if it was on purpose, ignore this warning...
+  warnings.warn(*args, **kwargs)
+Saving latest checkpoint...
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">surv_prob</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">mode_time</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_time</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;surv_prob&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">surv_prob</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;mode_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mode_time</span>
+<span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>t</th>
+      <th>e</th>
+      <th>fin</th>
+      <th>age</th>
+      <th>race</th>
+      <th>wexp</th>
+      <th>mar</th>
+      <th>paro</th>
+      <th>prio</th>
+      <th>surv_prob</th>
+      <th>mode_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>20</td>
+      <td>1</td>
+      <td>0</td>
+      <td>27</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0.709048</td>
+      <td>24.123699</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>17</td>
+      <td>1</td>
+      <td>0</td>
+      <td>18</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>8</td>
+      <td>0.901403</td>
+      <td>35.893150</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>25</td>
+      <td>1</td>
+      <td>0</td>
+      <td>19</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>13</td>
+      <td>0.408421</td>
+      <td>14.092414</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>52</td>
+      <td>0</td>
+      <td>1</td>
+      <td>23</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0.344179</td>
+      <td>24.131750</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>52</td>
+      <td>0</td>
+      <td>0</td>
+      <td>19</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0.262780</td>
+      <td>18.076330</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>427</th>
+      <td>52</td>
+      <td>0</td>
+      <td>1</td>
+      <td>31</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0.148387</td>
+      <td>10.222347</td>
+    </tr>
+    <tr>
+      <th>428</th>
+      <td>52</td>
+      <td>0</td>
+      <td>0</td>
+      <td>20</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0.505326</td>
+      <td>38.048428</td>
+    </tr>
+    <tr>
+      <th>429</th>
+      <td>52</td>
+      <td>0</td>
+      <td>1</td>
+      <td>20</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0.401292</td>
+      <td>28.716543</td>
+    </tr>
+    <tr>
+      <th>430</th>
+      <td>52</td>
+      <td>0</td>
+      <td>0</td>
+      <td>29</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0.176507</td>
+      <td>12.102779</td>
+    </tr>
+    <tr>
+      <th>431</th>
+      <td>52</td>
+      <td>0</td>
+      <td>1</td>
+      <td>24</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0.279434</td>
+      <td>19.276564</td>
+    </tr>
+  </tbody>
+</table>
+<p>432 rows × 11 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">][</span><span class="s2">&quot;surv_prob&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;death&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">][</span><span class="s2">&quot;surv_prob&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;censored&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWoAAAD4CAYAAADFAawfAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4yLjEsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy+j8jraAAASYElEQVR4nO3df3BV5Z3H8c+XGM1GWH+QsNMa3YQZoyIIxFBB+SGIDhWNdiQLzuDK2sr4c1ysrDp2ZnEXx1nX6grTkWV3W9G1SlFrhaUoChmQNpUkQgUER2p0UynGuFW0jRL57h83/DThnph7zn1y7/s1k/HGc3LuN88kH548z3meY+4uAEC4+mW7AADA0RHUABA4ghoAAkdQA0DgCGoACNwxcVy0pKTEy8vL47g0AOSkxsbGD929tKtjsQR1eXm5Ghoa4rg0AOQkM3u3u2MMfQBA4AhqAAgcQQ0AgYtljLore/fuVUtLi9rb25N6y5xSVFSksrIyFRYWZrsUAAlLLKhbWlo0YMAAlZeXy8ySetuc4O5qa2tTS0uLKioqsl0OgIQlNvTR3t6ugQMHEtJfg5lp4MCB/DUC5KlEx6gJ6a+PtgPyF5OJABC4xMaoj/Tw6rcyer05F1f26Px58+apf//+uuOOO3r0dXV1dTr22GN1/vnnS5JmzZqlyy67TNOmTevRdQAgqqwFdV9VV1en/v37HwhqALkvaseypx3GqPJq6OO+++5TZWWlxo4dqx07dkiSdu7cqSlTpujcc8/VuHHjtH37dknS8uXLdd5552nkyJGaPHmydu/erebmZi1atEgPP/ywRowYofXr10uS1q1bp/PPP1+DBw/WM888k7XvD0Buypugbmxs1NNPP61NmzZp5cqV2rhxoyRp9uzZWrhwoRobG/Xggw/qpptukiSNHTtW9fX1ev311zVjxgw98MADKi8v1w033KA5c+Zo06ZNGjdunCRp165devXVV7VixQrdddddWfseAeSmvBn6WL9+vb7zne+ouLhYklRTU6P29nb96le/Um1t7YHzPv/8c0mp+76nT5+uXbt26Ysvvjjq/ctXXnml+vXrpyFDhmj37t3xfiMA8k7eBHVX9u3bpxNPPFGbNm36yrFbb71Vt99+u2pqalRXV6d58+Z1e53jjjvuwGseFgwg0/Jm6GP8+PF6/vnn9ec//1l79uzR8uXLVVxcrIqKCi1btkxSKmQ3b94sSfr44491yimnSJKWLFly4DoDBgzQnj17kv8GAOStrPWo45od7U5VVZWmT5+u4cOHa9CgQRo1apQk6cknn9SNN96o+fPna+/evZoxY4aGDx+uefPmqba2VieddJImTZqkd955R5J0+eWXa9q0afrFL36hhQsXJvo9AMhPFsef6tXV1X7kgwPefPNNnXXWWRl/r3xCGwLZkcTteWbW6O7VXR3Lm6EPAOirCGoACBxBDQCBI6gBIHAENQAEjqAGgMBFuo/azJol7ZH0paSO7m4h6ZG19/f6EoeZeHdmr5cldXV1evDBB7VixYpslwIgED1Z8DLR3T+MrZIc9+WXX6qgoCDbZQDog/Jq6OPxxx/XOeeco+HDh+uaa65Ra2urrrrqKo0aNUqjRo3Shg0bJKUeKnDdddfpwgsv1ODBg7VgwQJJ0meffaapU6dq+PDhGjp0qJYuXSpJeuWVVzRy5EgNGzZM11133YGNncrLy3XnnXeqqqpKy5Yt00svvaQxY8aoqqpKtbW1+vTTTyVJq1at0plnnqmqqio999xzWWgZACGLGtQu6SUzazSz2V2dYGazzazBzBpaW1szV2GGbN26VfPnz9eaNWu0efNmPfLII7rttts0Z84cbdy4Uc8++6y+973vHTh/+/btevHFF/Xaa6/p3nvv1d69e7Vq1Sp985vf1ObNm7VlyxZNmTJF7e3tmjVrlpYuXao33nhDHR0devTRRw9cZ+DAgWpqatLkyZM1f/58vfzyy2pqalJ1dbUeeughtbe36/rrr9fy5cvV2NioP/zhD9loHgABixrUY929StK3Jd1sZuOPPMHdF7t7tbtXl5aWZrTITFizZo1qa2tVUlIiSTr55JP18ssv65ZbbtGIESNUU1OjTz755EAvd+rUqTruuONUUlKiQYMGaffu3Ro2bJhWr16tO++8U+vXr9cJJ5ygHTt2qKKiQpWVqaWj1157rdatW3fgfadPny5Jqq+v17Zt23TBBRdoxIgRWrJkid59911t375dFRUVOv3002VmmjlzZsItAyB0kcao3f33nf/9wMx+LulbktYd/avCt2/fPtXX16uoqOgrxw7durSgoEAdHR2qrKxUU1OTVq5cqR/84Ae66KKLdMUVVxz1PY4//nhJqZ35Lr74Yj311FOHHe9qi1UAOFTaHrWZHW9mA/a/lnSJpC1xF5ZpkyZN0rJly9TW1iZJ+uijj3TJJZcctgNeutB8//33VVxcrJkzZ2ru3LlqamrSGWecoebmZr399tuSpCeeeEITJkz4yteOHj1aGzZsOHDeZ599prfeektnnnmmmpubtXPnTkn6SpADQJQe9V9J+rmZ7T//p+6+qtfvnPDtdGeffbbuueceTZgwQQUFBRo5cqQWLFigm2++Weecc446Ojo0fvx4LVq0qNtrvPHGG5o7d6769eunwsJCPfrooyoqKtJPfvIT1dbWqqOjQ6NGjdINN9zwla8tLS3VY489pquvvvrAZOP8+fNVWVmpxYsXa+rUqSouLta4cePY7xrAYdjmtA+hDYHsYJtTAMBREdQAELhEg5oHv359tB2QvxIL6qKiIrW1tRE4X4O7q62trcvbCAHkvsQebltWVqaWlhaFuGqxLygqKlJZWVm2ywCQBYkFdWFhoSoqKpJ6OwDIGUwmAkDgCGoACBxBDQCBI6gBIHAENQAEjqAGgMAR1AAQOIIaAAJHUANA4AhqAAgcQQ0AgSOoASBwBDUABI6gBoDAEdQAEDiCGgACR1ADQOAIagAIHEENAIEjqAEgcAQ1AASOoAaAwBHUABC4yEFtZgVm9rqZrYizIADA4XrSo75N0ptxFQIA6FqkoDazMklTJf1nvOUAAI4UtUf9b5L+QdK+7k4ws9lm1mBmDa2trRkpDgAQIajN7DJJH7h749HOc/fF7l7t7tWlpaUZKxAA8l2UHvUFkmrMrFnS05Immdl/x1oVAOCAtEHt7ne7e5m7l0uaIWmNu8+MvTIAgCTuowaA4B3Tk5PdvU5SXSyVAAC6RI8aAAJHUANA4AhqAAgcQQ0AgSOoASBwBDUABI6gBoDAEdQAEDiCGgACR1ADQOAIagAIHEENAIEjqAEgcAQ1AASOoAaAwBHUABA4ghoAAkdQA0DgCGoACBxBDQCBI6gBIHAENQAEjqAGgMAR1AAQOIIaAAJHUANA4AhqAAgcQQ0AgSOoASBwaYPazIrM7DUz22xmW83s3iQKAwCkHBPhnM8lTXL3T82sUNKrZvZLd6+PuTYAgCIEtbu7pE87Py3s/PA4iwIAHBRpjNrMCsxsk6QPJK129990cc5sM2sws4bW1tZM1wkAeStSULv7l+4+QlKZpG+Z2dAuzlns7tXuXl1aWprpOgEgb/Xorg93/6OktZKmxFMOAOBIUe76KDWzEztf/4WkiyVtj7swAEBKlLs+viFpiZkVKBXsP3P3FfGWBQDYL8pdH7+VNDKBWnLL2vvTnzPx7t5dI93XA8gJrEwEgMAR1AAQOIIaAAJHUANA4AhqAAgcQQ0AgSOoASBwBDUABC7KykTEJcqiGAB5jx41AASOoAaAwBHUABA4ghoAAkdQA0DgCGoACBxBDQCBI6gBIHAENQAEjqAGgMAR1AAQOIIaAAJHUANA4Ng9D/GLskvgxLvjrwPoo+hRA0DgCGoACBxBDQCBI6gBIHBMJuaoh1e/lfacORdXZuxaPblebNJNWjJhiT6KHjUABC5tUJvZqWa21sy2mdlWM7sticIAAClRhj46JH3f3ZvMbICkRjNb7e7bYq4NAKAIPWp33+XuTZ2v90h6U9IpcRcGAEjp0WSimZVLGinpN10cmy1ptiSddtppGSgtRnk06TT6vcXdH1w7MKe+VyBXRZ5MNLP+kp6V9Pfu/smRx919sbtXu3t1aWlpJmsEgLwWKajNrFCpkH7S3Z+LtyQAwKGi3PVhkv5L0pvu/lD8JQEADhWlR32BpGskTTKzTZ0fl8ZcFwCgU9rJRHd/VZIlUEvfEmXrTgDIAFYmAkDg2OsDQeoz+4v0QbTt4aK2RzbRowaAwOVmj5rxYwA5hB41AASOoAaAwBHUABA4ghoAApebk4m91VcmI49S5+j32hIsJH7d7gK4dmCyhQBZQI8aAAJHUANA4AhqAAgcY9TImO6W4h46Xj5mcN8fU46y5Dgby69DXgqdyWXr+bgEnqBGrx31cV8Aeo2hDwAIHEENAIEjqAEgcAQ1AASOyUSkxWQhkF30qAEgcAQ1AASOoAaAwIU3Rp1u57qJdydTR77oKzsFAnmMHjUABC68HjWQAzK9H0U29vEIdU+TfESPGgACR1ADQOAY+kAYjpjUjOVRYnk0UZ1ukVL9abMTqgSZQI8aAAKXNqjN7Mdm9oGZbUmiIADA4aL0qB+TNCXmOgAA3Ugb1O6+TtJHCdQCAOhCxsaozWy2mTWYWUNra2umLgsAeS9jQe3ui9292t2rS0tLM3VZAMh73PUBAIHjPmr0ab/+Xebutx4zMWOXiiwbS8NDlsn2yKW2jXJ73lOSfi3pDDNrMbPvxl8WAGC/tD1qd786iUKAXBDlsWWsCkRPMUYNAIEjqAEgcAQ1AASOuz6A/aI8liwDO+z1dme7KOPgyC30qAEgcAQ1AASOoAaAwBHUABA4JhOBnlh7fzyPCQOOImeC+tB1/Uf7RRozeGAS5cQmk3tbZPJayE+5tJ9GyBj6AIDAEdQAEDiCGgAC1/fGqLtZPcYED3IFKw9xJHrUABA4ghoAAkdQA0DgCGoACFzfm0wEkIjebseKzKFHDQCBo0fdhahLq6MuR49yvb6+tD2qkJeth1wb8hs9agAIHD1qIA9lYlENY9jJoUcNAIEjqAEgcAQ1AASOoAaAwDGZCCAWUSYsmXCMhh41AAQuUlCb2RQz22Fmb5vZXXEXBQA4KG1Qm1mBpB9J+rakIZKuNrMhcRcGAEiJ0qP+lqS33f137v6FpKclXRFvWQCA/aJMJp4i6X8P+bxF0nlHnmRmsyXtnxn41Mx29L68YJRI+jDbRQSCtjiItkjpRTv8MKOFZNvtvfuZ+OvuDmTsrg93XywpJx/2ZmYN7l6d7TpCQFscRFuk0A4HxdUWUYY+fi/p1EM+L+v8fwCABEQJ6o2STjezCjM7VtIMSS/EWxYAYL+0Qx/u3mFmt0h6UVKBpB+7+9bYKwtLTg7pfE20xUG0RQrtcFAsbWHuHsd1AQAZwspEAAgcQQ0AgSOoD5FuqbyZ3W5m28zst2b2ipl1e99jXxd12wAzu8rM3Mxy8vasKO1gZn/T+XOx1cx+mnSNSYnw+3Gama01s9c7f0cuzUadcTOzH5vZB2a2pZvjZmYLOtvpt2ZW1es3dXc+UuP0BZJ2Shos6VhJmyUNOeKciZKKO1/fKGlptuvOVlt0njdA0jpJ9ZKqs113ln4mTpf0uqSTOj8flO26s9gWiyXd2Pl6iKTmbNcdU1uMl1QlaUs3xy+V9EtJJmm0pN/09j3pUR+Udqm8u6919z91flqv1D3luSjqtgH/LOlfJLUnWVyCorTD9ZJ+5O7/J0nu/kHCNSYlSlu4pL/sfH2CpPcTrC8x7r5O0kdHOeUKSY97Sr2kE83sG715T4L6oK6Wyp9ylPO/q9S/mrkobVt0/jl3qrv/T5KFJSzKz0SlpEoz22Bm9WY2JbHqkhWlLeZJmmlmLZJWSro1mdKC09MsSYsHB3wNZjZTUrWkCdmuJRvMrJ+khyTNynIpIThGqeGPC5X6C2udmQ1z9z9mtarsuFrSY+7+QzMbI+kJMxvq7vuyXVhfR4/6oEhL5c1ssqR7JNW4++cJ1Za0dG0xQNJQSXVm1qzUONwLOTihGOVnokXSC+6+193fkfSWUsGda6K0xXcl/UyS3P3XkoqU2qQo32R82w2C+qC0S+XNbKSkf1cqpHN1LFJK0xbu/rG7l7h7ubuXKzVeX+PuDdkpNzZRtk94XqnetMysRKmhkN8lWWRCorTFe5IukiQzO0upoG5NtMowvCDpbzvv/hgt6WN339WbCzL00cm7WSpvZv8kqcHdX5D0r5L6S1pmZpL0nrvXZK3omERsi5wXsR1elHSJmW2T9KWkue7elr2q4xGxLb4v6T/MbI5SE4uzvPM2iFxiZk8p9Y9zSed4/D9KKpQkd1+k1Pj8pZLelvQnSX/X6/fMwXYEgJzC0AcABI6gBoDAEdQAEDiCGgACR1ADQOAIagAIHEENAIH7f42bBEaVeL7JAAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># %tensorboard --logdir ./lightning_logs/</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 

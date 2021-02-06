@@ -23,7 +23,10 @@ def get_distribution(dist:str):
     def dist_logpdf(ξ, σ):
         return dist(scale=σ).log_prob(ξ)
 
-    def dist_logcdf(ξ, σ):
+    def dist_logicdf(ξ, σ):
+        """
+        log of inverse cumulative distribution function
+        """
         return torch.log(1 - dist(scale=σ).cdf(ξ))
 
-    return dist_logpdf, dist_logcdf
+    return dist_logpdf, dist_logicdf
