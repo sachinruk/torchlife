@@ -16,6 +16,12 @@ A proper dive into theory can be seen [here](./SAT).
 ## What's with the name?
 Well, if you torch a life... you probability wouldn't survive. 😬
 
+## Kudos
+Special thanks to the following libraries and resources.
+- [nbdev](https://nbdev.fast.ai/)
+- [pytorch lightning](https://pytorch-lightning.readthedocs.io/)
+- [Generalised Linear Models by Germán Rodríguez](https://data.princeton.edu/wws509/notes/c7s1), Chapter 7.
+
 ## Install
 
 `pip install torchlife`
