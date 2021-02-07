@@ -18,6 +18,7 @@ Well, if you torch a life... you probability wouldn't survive. 😬
 
 ## Kudos
 Special thanks to the following libraries and resources.
+- [lifelines](https://lifelines.readthedocs.io/en/latest/) and especially Cameron Davidson-Pilon
 - [nbdev](https://nbdev.fast.ai/)
 - [pytorch lightning](https://pytorch-lightning.readthedocs.io/)
 - [Generalised Linear Models by Germán Rodríguez](https://data.princeton.edu/wws509/notes/c7s1), Chapter 7.
