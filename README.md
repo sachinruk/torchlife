@@ -16,6 +16,39 @@ A proper dive into theory can be seen [here](./SAT).
 ## What's with the name?
 Well, if you torch a life... you probability wouldn't survive. 😬
 
+## How to use this library
+There are 3 models in here that can be used.
+1. [Kaplan Meier Model]
+2. [Proportional Hazard Models]
+3. [Accelerated Failure Time Models]
+All 3 models require you to input a pandas dataframe with the columns `"t", "e"` indicating time elapsed and a binary variable, event if a death (1) or live (0) instance is observed respectively. They are all capable of doing `fit` and `plot_survival_function`.
+
+### Kaplan Meier Model
+This is the most simplistic model.
+
+### Proportional Hazard Model
+This model attempts to model the instantaneous hazard of an instance given time. It does this by binning time and finding the cumulative hazard upto a given point in time. It's extention the cox model, takes into account other variables that are not time dependant such that the above mentioned hazard can grow or shrink proportional to the risk associated with non-temporal feature based hazard.
+```python
+from torchlife.model import ModelHazard
+
+model = ModelHazard('cox')
+model.fit(df)
+inst_hazard, surv_probability = model.predict(df)
+```
+
+### Accelerated Failure Time Models
+This model attempts to model (the mode and not average) time such that it is a function of the non-temporal features, x.
+
+You are free to choose the distribution of the error, however, `Gumbel` distribution is a popular option in SA literature. The distribution needs to be over the real domain and not just positive since we are modelling log time.
+```python
+from torchlife.model import ModelAFT
+
+model = ModelAFT('Gumbel')
+model.fit(df)
+surv_prob = model.predict(df)
+mode_time = model.predict_time(df)
+```
+
 ## Kudos
 Special thanks to the following libraries and resources.
 - [lifelines](https://lifelines.readthedocs.io/en/latest/) and especially Cameron Davidson-Pilon
@@ -150,139 +183,27 @@ model.fit(df)
 λ, S = model.predict(df)
 ```
 
-
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>6.993955</td>
-      <td>10.741218</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>8.774823</td>
-      <td>14.736155</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>9.991431</td>
-      <td>16.564432</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>10.995527</td>
-      <td>17.174604</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>11.723181</td>
-      <td>16.920387</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>12.060142</td>
-      <td>15.983603</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>12.174074</td>
-      <td>14.553919</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>7</td>
-      <td>12.038597</td>
-      <td>12.683950</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>8</td>
-      <td>11.702325</td>
-      <td>10.452137</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>9</td>
-      <td>11.218502</td>
-      <td>7.981377</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>10</td>
-      <td>10.570101</td>
-      <td>5.209520</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>11</td>
-      <td>9.859859</td>
-      <td>4.039678</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>12</td>
-      <td>9.155064</td>
-      <td>3.643379</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>13</td>
-      <td>8.514476</td>
-      <td>2.742133</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>14</td>
-      <td>7.915660</td>
-      <td>3.074418</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>15</td>
-      <td>7.413548</td>
-      <td>2.585245</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>16</td>
-      <td>6.967895</td>
-      <td>2.710384</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>17</td>
-      <td>6.569957</td>
-      <td>2.544009</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>18</td>
-      <td>6.215098</td>
-      <td>2.433515</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>19</td>
-      <td>5.880322</td>
-      <td>2.342750</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
+    GPU available: False, used: False
+    TPU available: None, using: 0 TPU cores
+    
+      | Name | Type               | Params
+    --------------------------------------------
+    0 | base | ProportionalHazard | 12    
+    --------------------------------------------
+    12        Trainable params
+    0         Non-trainable params
+    12        Total params
+    Epoch 0:  75%|███████▌  | 3/4 [00:00<00:00, 25.43it/s, loss=nan, v_num=49]
+    Epoch 0: 100%|██████████| 4/4 [00:00<00:00, 16.39it/s, loss=nan, v_num=49]
+    Epoch 1:  75%|███████▌  | 3/4 [00:00<00:00, 23.74it/s, loss=nan, v_num=49]
+    Epoch 1: 100%|██████████| 4/4 [00:00<00:00, 15.25it/s, loss=nan, v_num=49]
+    Epoch 2:  75%|███████▌  | 3/4 [00:00<00:00, 22.98it/s, loss=nan, v_num=49]
+    Epoch 2: 100%|██████████| 4/4 [00:00<00:00, 15.53it/s, loss=nan, v_num=49]
+    Epoch 3:  75%|███████▌  | 3/4 [00:00<00:00, 20.23it/s, loss=nan, v_num=49]
+    Validating: 0it [00:00, ?it/s][A
+    Epoch 3: 100%|██████████| 4/4 [00:00<00:00, 13.30it/s, loss=nan, v_num=49]
+                                                             [ASaving latest checkpoint...
+    Epoch 3: 100%|██████████| 4/4 [00:00<00:00, 12.92it/s, loss=nan, v_num=49]
 
 
 Let's plot the survival function for the 4th element in the dataframe:
@@ -294,5 +215,5 @@ model.plot_survival_function(t, x)
 ```
 
 
-![png](docs/images/output_8_0.png)
+![svg](docs/images/output_8_0.svg)
 
